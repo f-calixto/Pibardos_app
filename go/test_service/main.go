@@ -10,5 +10,5 @@ func main() {
 }
 
 func test_handler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("HOLA TEST API NGINX"))
+	w.Write([]byte("HOLA TEST API"))
 }

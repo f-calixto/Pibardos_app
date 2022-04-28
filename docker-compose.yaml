@@ -31,6 +31,23 @@ services:
       - NGINX_PROXY_CONTAINER=nginx-proxy
     depends_on:
       - nginx-proxy
+  portainer:
+    image: portainer/portainer-ce:linux-arm
+    restart: unless-stopped
+    container_name: portainer
+    expose:
+      - "9000"
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer:/data
+    environment:
+      - VIRTUAL_HOST=portainer.pibardosapp.com
+      - VIRTUAL_PORT=9000
+      - LETSENCRYPT_HOST=portainer.pibardosapp.com
+      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
 
   nginx-static-page:
     image: nginx
@@ -55,23 +72,6 @@ services:
       - LETSENCRYPT_HOST=api.pibardosapp.com
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
 
-  portainer:
-    image: portainer/portainer-ce:linux-arm
-    restart: unless-stopped
-    container_name: portainer
-    expose:
-      - "9000"
-    security_opt:
-      - no-new-privileges:true
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer:/data
-    environment:
-      - VIRTUAL_HOST=portainer.pibardosapp.com
-      - VIRTUAL_PORT=9000
-      - LETSENCRYPT_HOST=portainer.pibardosapp.com
-      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
 
   go-test-api:
     build: ./go/test_service
