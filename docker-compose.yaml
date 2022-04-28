@@ -53,7 +53,7 @@ services:
   ddclient:
     image: lscr.io/linuxserver/ddclient:arm32v7-latest
     restart: unless-stopped
-    container_name: ddclient_daemon
+    container_name: ddclient
     environment:
       - PUID=1000
       - PGID=1000
