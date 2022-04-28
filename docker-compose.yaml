@@ -71,19 +71,21 @@ services:
       - VIRTUAL_HOST=api.pibardosapp.com
       - LETSENCRYPT_HOST=api.pibardosapp.com
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
-
-
-  go-test-api:
-    build: ./go/test_service
-    container_name: go-test-api
-    expose:
-    - "5000"
-    environment:
-      - VIRTUAL_HOST=api.pibardosapp.com/test-api
-      - LETSENCRYPT_HOST=api.pibardosapp.com
-      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
     volumes:
-      - ./go/test_service:/app
+      - ./node:/app
+
+
+  # go-test-api:
+  #   build: ./go/test_service
+  #   container_name: go-test-api
+  #   expose:
+  #   - "5000"
+  #   environment:
+  #     - VIRTUAL_HOST=api.pibardosapp.com/test-api
+  #     - LETSENCRYPT_HOST=api.pibardosapp.com
+  #     - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+  #   volumes:
+  #     - ./go/test_service:/app
 
 volumes:
   certs:
