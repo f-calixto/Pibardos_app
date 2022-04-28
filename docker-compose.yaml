@@ -31,6 +31,7 @@ services:
       - NGINX_PROXY_CONTAINER=nginx-proxy
     depends_on:
       - nginx-proxy
+
   portainer:
     image: portainer/portainer-ce:linux-arm
     restart: unless-stopped
@@ -48,6 +49,17 @@ services:
       - VIRTUAL_PORT=9000
       - LETSENCRYPT_HOST=portainer.pibardosapp.com
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
+  ddclient:
+    image: lscr.io/linuxserver/ddclient:arm32v7-latest
+    restart: unless-stopped
+    container_name: ddclient_daemon
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Montevideo
+    volumes:
+      - ./volumes/ddclient:/config
 
   nginx-static-page:
     image: nginx
@@ -73,7 +85,6 @@ services:
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
     volumes:
       - ./node:/app
-
 
   # go-test-api:
   #   build: ./go/test_service
