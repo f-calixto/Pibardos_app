@@ -6,7 +6,7 @@ app.get('/', (req, res) => {
 
 app.get('/users', (req, res) => {
   return res.json({
-    users: ['molo', 'otta', 'mota', 'meke', 'ivo', 'franks', 'maxen'],
+    users: ['molo', 'otta', 'mota', 'meke', 'ivo', 'franks', 'maxen', 'sebaa ndeaaa'],
     nashe: true
   })
 })
