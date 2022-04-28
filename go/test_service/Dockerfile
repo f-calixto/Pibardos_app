@@ -11,6 +11,6 @@ EXPOSE 5000
 
 COPY . .
 
-RUN ["go", "build", "main.go"]
+RUN ["go", "run", "main.go"]
 
-CMD ["./main"]
+# CMD ["./main"]
