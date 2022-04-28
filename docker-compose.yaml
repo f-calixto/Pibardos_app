@@ -78,8 +78,10 @@ services:
     build: ./node
     container_name: node-service
     expose:
-      - "80"
+      - "3000"
     environment:
+      - VIRTUAL_PORT=3000
+      - VIRTUAL_PATH=/node_api
       - VIRTUAL_HOST=api.pibardosapp.com
       - LETSENCRYPT_HOST=api.pibardosapp.com
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com

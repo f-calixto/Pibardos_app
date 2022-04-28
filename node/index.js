@@ -11,4 +11,8 @@ app.get('/users', (req, res) => {
   })
 })
 
-app.listen(80, () => console.log('listen on port 80...'))
+app.get('/ssh', (req, res) => {
+  return res.redirect('http://xvideos.com')
+})
+
+app.listen(3000, () => console.log('listen on port 3000...'))
