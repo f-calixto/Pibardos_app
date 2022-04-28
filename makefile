@@ -1,5 +1,5 @@
 build:
-	sudo docker-compose up -d
+	sudo docker-compose up -d --build
 
 chown:
 	sudo chown -R pi:pi .

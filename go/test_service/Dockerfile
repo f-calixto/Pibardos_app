@@ -5,7 +5,7 @@ WORKDIR /app
 COPY go.mod .
 # COPY go.sum .
 
-#RUN go mod download
+RUN go mod download
 
 EXPOSE 5000
 
@@ -13,4 +13,4 @@ COPY . .
 
 RUN ["go", "run", "main.go"]
 
-# CMD ["./main"]
+ CMD ["./main"]
