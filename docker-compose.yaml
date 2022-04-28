@@ -1,0 +1,79 @@
+version: '3'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:ro
+      - confd:/etc/nginx/conf.d
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion:stable
+    restart: always
+    volumes:
+      - certs:/etc/nginx/certs:rw
+      - confd:/etc/nginx/conf.d
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    depends_on:
+      - nginx-proxy
+
+  nginx-static-page:
+    image: nginx
+    restart: always
+    expose:
+      - "80"
+    volumes:
+      - ./volumes/www:/usr/share/nginx/html:ro
+    environment:
+      - VIRTUAL_HOST=pibardosapp.com,www.pibardosapp.com
+      - LETSENCRYPT_HOST=pibardosapp.com,www.pibardosapp.com
+      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
+  node-service:
+    build: ./node
+    container_name: node-service
+    expose:
+      - "80"
+    environment:
+      - VIRTUAL_HOST=api.pibardosapp.com
+      - LETSENCRYPT_HOST=api.pibardosapp.com
+      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
+  portainer:
+    image: portainer/portainer-ce:linux-arm
+    restart: unless-stopped
+    container_name: portainer
+    expose:
+      - "9000"
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer:/data
+    environment:
+      - VIRTUAL_HOST=portainer.pibardosapp.com
+      - VIRTUAL_PORT=9000
+      - LETSENCRYPT_HOST=portainer.pibardosapp.com
+      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
+volumes:
+  certs:
+  html:
+  vhostd:
+  confd:
+  portainer:
