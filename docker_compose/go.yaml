@@ -2,7 +2,7 @@ version: '3'
 
 services:
   go-test-api:
-    build: ./go/test_service
+    build: ../go/test_service
     container_name: go-test-api
     expose:
     - "5000"

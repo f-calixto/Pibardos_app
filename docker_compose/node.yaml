@@ -2,7 +2,7 @@ version: '3'
 
 services:
  node-service:
-    build: ./node
+    build: ../node
     container_name: node-service
     expose:
       - "3000"

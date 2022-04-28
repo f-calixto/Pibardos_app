@@ -59,7 +59,7 @@ services:
       - PGID=1000
       - TZ=America/Montevideo
     volumes:
-      - ./volumes/ddclient:/config
+      - ../volumes/ddclient:/config
 
   nginx-static-page:
     image: nginx
@@ -68,7 +68,7 @@ services:
     expose:
       - "80"
     volumes:
-      - ./volumes/www:/usr/share/nginx/html:ro
+      - ../volumes/www:/usr/share/nginx/html:ro
     environment:
       - VIRTUAL_HOST=pibardosapp.com,www.pibardosapp.com
       - LETSENCRYPT_HOST=pibardosapp.com,www.pibardosapp.com
