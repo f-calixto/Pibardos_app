@@ -43,7 +43,7 @@ services:
   ########################
   ddclient:
     image: lscr.io/linuxserver/ddclient:arm32v7-latest
-    restart: unless-stopped
+    restart: always
     container_name: ddclient
     environment:
       - PUID=1000
@@ -103,7 +103,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PIBARDOS_APP_PWD}
       - POSTGRES_DB=pibardos_app
     volumes:
-      - ../db:/docker-entrypoint-initdb.d/
+      - ./db:/docker-entrypoint-initdb.d/
       - /data/postgres_data_pibardos_app:/var/lib/postgresql/data
 
   ########################
