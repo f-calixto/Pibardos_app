@@ -4,6 +4,7 @@ services:
  node-service:
     build: ../node
     container_name: node-service
+    restart: always
     expose:
       - "3000"
     environment:

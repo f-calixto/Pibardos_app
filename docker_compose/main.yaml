@@ -1,6 +1,9 @@
 version: '3'
 
 services:
+  ########################
+  ##### nging-proxy ######
+  ########################
   nginx-proxy:
     image: jwilder/nginx-proxy
     container_name: nginx-proxy
@@ -17,6 +20,9 @@ services:
     labels:
       - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
 
+  ########################
+  ##### letsencrypt ######
+  ########################
   letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion:stable
     restart: always
@@ -32,6 +38,9 @@ services:
     depends_on:
       - nginx-proxy
 
+  ########################
+  ####### portainer ######
+  ########################
   portainer:
     image: portainer/portainer-ce:linux-arm
     restart: unless-stopped
@@ -43,13 +52,16 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer:/data
+      - ../volumes/portainer:/data
     environment:
       - VIRTUAL_HOST=portainer.pibardosapp.com
       - VIRTUAL_PORT=9000
       - LETSENCRYPT_HOST=portainer.pibardosapp.com
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
 
+  ########################
+  ####### ddclient #######
+  ########################
   ddclient:
     image: lscr.io/linuxserver/ddclient:arm32v7-latest
     restart: unless-stopped
@@ -61,6 +73,9 @@ services:
     volumes:
       - ../volumes/ddclient:/config
 
+  ########################
+  ###### nginx-home ######
+  ########################
   nginx-static-page:
     image: nginx
     restart: always
@@ -72,6 +87,37 @@ services:
     environment:
       - VIRTUAL_HOST=pibardosapp.com,www.pibardosapp.com
       - LETSENCRYPT_HOST=pibardosapp.com,www.pibardosapp.com
+      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
+  ########################
+  ####### postgres #######
+  ########################
+  postgres:
+    image: arm32v7/postgres:latest
+    container_name: postgres
+    restart: always
+    expose:
+      - "5432"
+    environment:
+      - POSTGRES_USER=pibardos
+      - POSTGRES_PASSWORD=adminfranks
+      - POSTGRES_DB=pibardos_app
+    volumes:
+      - ../db:/docker-entrypoint-initdb.d/
+      - /data/postgres_data_pibardos_app:/var/lib/postgresql/data
+
+  ########################
+  ######## adminer #######
+  ########################
+  adminer:
+    image: arm32v7/adminer:latest
+    container_name: adminer
+    expose:
+      - "8080"
+    environment:
+      - VIRTUAL_HOST=adminer.pibardosapp.com
+      - VIRTUAL_PORT=8080
+      - LETSENCRYPT_HOST=adminer.pibardosapp.com
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
       
 volumes:
