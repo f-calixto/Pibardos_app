@@ -39,27 +39,6 @@ services:
       - nginx-proxy
 
   ########################
-  ####### portainer ######
-  ########################
-  portainer:
-    image: portainer/portainer-ce:linux-arm
-    restart: unless-stopped
-    container_name: portainer
-    expose:
-      - "9000"
-    security_opt:
-      - no-new-privileges:true
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer:/data
-    environment:
-      - VIRTUAL_HOST=portainer.pibardosapp.com
-      - VIRTUAL_PORT=9000
-      - LETSENCRYPT_HOST=portainer.pibardosapp.com
-      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
-
-  ########################
   ####### ddclient #######
   ########################
   ddclient:
@@ -90,6 +69,27 @@ services:
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
 
   ########################
+  ####### portainer ######
+  ########################
+  portainer:
+    image: portainer/portainer-ce:linux-arm
+    restart: unless-stopped
+    container_name: portainer
+    expose:
+      - "9000"
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer:/data
+    environment:
+      - VIRTUAL_HOST=portainer.pibardosapp.com
+      - VIRTUAL_PORT=9000
+      - LETSENCRYPT_HOST=portainer.pibardosapp.com
+      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
+  ########################
   ####### postgres #######
   ########################
   postgres:
@@ -114,10 +114,10 @@ services:
     container_name: adminer
     restart: always
     expose:
-      - "9001"
+      - "8080"
     environment:
       - VIRTUAL_HOST=adminer.pibardosapp.com
-      - VIRTUAL_PORT=9001
+      - VIRTUAL_PORT=8080
       - LETSENCRYPT_HOST=adminer.pibardosapp.com
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
       
