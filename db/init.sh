@@ -12,10 +12,6 @@ CREATE TABLE IF NOT EXISTS users (
     avatar BYTEA,
     UNIQUE (id, username, email)
 );
-CREATE TABLE IF NOT EXISTS users_groups (
-    user_id VARCHAR(255) REFERENCES users(id),
-    group_id VARCHAR(255) REFERENCES groups(id)
-);
 CREATE TABLE IF NOT EXISTS groups (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255),
@@ -24,7 +20,10 @@ CREATE TABLE IF NOT EXISTS groups (
     admin_id VARCHAR(255),
     access_code VARCHAR(6),
     UNIQUE (id, name)
-
+);
+CREATE TABLE IF NOT EXISTS users_groups (
+    user_id VARCHAR(255) REFERENCES users(id),
+    group_id VARCHAR(255) REFERENCES groups(id)
 );
 CREATE TABLE IF NOT EXISTS group_activities (
     id VARCHAR(255) PRIMARY KEY,
