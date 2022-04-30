@@ -118,9 +118,6 @@ services:
     environment:
       - ADMINER_DESIGN=nette
       - ADMINER_DEFAULT_SERVER=postgres
-      - ADMINER_DEFAULT_DB_DRIVER=postgres
-      - ADMINER_DEFAULT_DB_HOST=pibardos
-      - ADMINER_DEFAULT_DB_NAME=pibardos_app
       - VIRTUAL_HOST=adminer.pibardosapp.com
       - VIRTUAL_PORT=8080
       - LETSENCRYPT_HOST=adminer.pibardosapp.com
