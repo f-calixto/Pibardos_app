@@ -100,7 +100,7 @@ services:
       - "5432"
     environment:
       - POSTGRES_USER=pibardos
-      - POSTGRES_PASSWORD=${POSTGRES_PIBARDOS_APP_PWD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_PIBARDOS_APP}
       - POSTGRES_DB=pibardos_app
     volumes:
       - ./db:/docker-entrypoint-initdb.d/
