@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at VARCHAR(255),
     country VARCHAR(2),
     birthday VARCHAR(255),
-    status BOOLEAN,
+    status VARCHAR(255),
     avatar BYTEA,
     UNIQUE (id, username, email)
 );
@@ -19,6 +19,8 @@ CREATE TABLE IF NOT EXISTS groups (
     country VARCHAR(2),
     admin_id VARCHAR(255),
     access_code VARCHAR(6),
+    avatar BYTEA,
+    created_at VARCHAR(255),
     UNIQUE (id, name)
 );
 CREATE TABLE IF NOT EXISTS users_groups (
@@ -30,6 +32,24 @@ CREATE TABLE IF NOT EXISTS group_activities (
     group_id VARCHAR(255) REFERENCES groups(id),
     title VARCHAR(255),
     date VARCHAR(255),
+    UNIQUE (id)
+);
+CREATE TABLE IF NOT EXISTS debts (
+    id VARCHAR(255) PRIMARY KEY,
+    group_id VARCHAR(255) REFERENCES groups(id),
+    lender_id VARCHAR(255),
+    borrower_id VARCHAR(255),
+    UNIQUE (id)
+);
+CREATE TABLE IF NOT EXISTS debt_requests (
+    id VARCHAR(255) PRIMARY KEY,
+    group_id VARCHAR(255) REFERENCES groups(id),
+    lender_id VARCHAR(255),
+    borrower_id VARCHAR(255),
+    created_at VARCHAR(255),
+    description VARCHAR(255),
+    amount INTEGER,
+    status INTEGER,
     UNIQUE (id)
 );
 EOSQL
