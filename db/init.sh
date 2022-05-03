@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS group_activities (
     group_id VARCHAR(255) REFERENCES groups(id),
     title VARCHAR(255),
     date VARCHAR(255),
-    guest_list VARCHAR[],
+    guest_list VARCHAR(255)[],
     UNIQUE (id)
 );
 CREATE TABLE IF NOT EXISTS debts (
