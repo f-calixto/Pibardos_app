@@ -3,17 +3,16 @@
   "version": "1.0.0",
   "description": "Workspace of JavaScript applications",
   "main": "server.js",
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Agustin Lanusse (alanusse)",
+  "author": "Agustin Lanusse (@alanusse)",
   "license": "MIT",
-  "workspaces": [
-    "app",
-    "services/authentication"
-  ],
   "devDependencies": {
-    "eslint": "8.13.0",
+    "eslint": "8.14.0",
     "nodemon": "2.0.15"
   },
   "dependencies": {
