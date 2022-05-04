@@ -25,6 +25,8 @@
 	],
 	"rules": {
     "react/prop-types": "off",
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+		"quotes": ["error", "single"],
+		"jsx-quotes": ["error", "prefer-single"]
   }
 }
