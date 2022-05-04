@@ -16,4 +16,21 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, 'node_modules')
 ]
 
-module.exports = config
+const {
+  transformer,
+  resolver,
+  resolver: { assetExts, sourceExts }
+} = config
+
+module.exports = {
+  ...config,
+  transformer: {
+    transformer,
+    babelTransformerPath: require.resolve('react-native-svg-transformer')
+  },
+  resolver: {
+    resolver,
+    assetExts: assetExts.filter(ext => ext !== 'svg'),
+    sourceExts: [...sourceExts, 'svg']
+  }
+}
