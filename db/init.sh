@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
     country VARCHAR(2),
     birthday VARCHAR(255),
     status VARCHAR(255),
-    avatar BYTEA,
+    avatar VARCHAR(255),
     UNIQUE (id, username, email)
 );
 CREATE TABLE IF NOT EXISTS groups (
@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS groups (
     country VARCHAR(2),
     admin_id VARCHAR(255),
     access_code VARCHAR(6),
-    avatar BYTEA,
+    access_code_issue_time INTEGER,
+    avatar VARCHAR(255),
     created_at VARCHAR(255),
     UNIQUE (id, name)
 );
