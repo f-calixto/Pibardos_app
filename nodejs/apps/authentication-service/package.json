@@ -1,0 +1,13 @@
+{
+  "name": "authentication-service",
+  "version": "1.0.0",
+  "description": "authentication service",
+  "scripts": {
+    "start": "node ./bin/www",
+    "start:dev": "nodemon ./bin/www"
+  },
+  "author": "Agustin Lanusse (@alanusse)",
+  "license": "MIT",
+  "dependencies": {
+  }
+}

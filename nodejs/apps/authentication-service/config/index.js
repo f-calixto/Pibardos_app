@@ -1,0 +1,17 @@
+require('dotenv').config()
+
+const {
+  PORT = 3000,
+  MONGODB_URI_CONNECTION,
+  ACCESS_TOKEN_SECRET,
+  ACCESS_TOKEN_EXP_TIME,
+  REFRESH_TOKEN_SECRET,
+  REFRESH_TOKEN_EXP_TIME,
+  BCRYPT_SALT_ROUNDS,
+  BCRYPT_SECRET
+} = process.env
+
+module.exports = {
+  PORT,
+  MONGODB_URI_CONNECTION
+}
