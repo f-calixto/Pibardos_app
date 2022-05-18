@@ -69,12 +69,21 @@ UserSchema.methods.comparePassword = function (string) {
 
 UserSchema.plugin(uniqueValidator)
 
+// remove password and __v fields from returned json
+// and rename _id field to id
 UserSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = document.id
     delete returnedObject._id
     delete returnedObject.password
     delete returnedObject.__v
+  }
+})
+
+// remove password field from returned user document
+UserSchema.set('toObject', {
+  transform: (document, returnedObject) => {
+    delete returnedObject.password
   }
 })
 
