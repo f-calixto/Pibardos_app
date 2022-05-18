@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 const { v4: uuidv4 } = require('uuid')
 const uniqueValidator = require('mongoose-unique-validator')
-const { isEmail } = require('validator')
+const { isEmail, isAlphanumeric } = require('validator')
+const passwordMethods = require('../utils/passwordMethods')
 
 const UserSchema = new mongoose.Schema({
   _id: {
@@ -16,7 +17,11 @@ const UserSchema = new mongoose.Schema({
     lowercase: true,
     minlength: [5, 'Username minimum length is 8 characters'],
     maxlength: [24, 'Username maximum length is 24 characters'],
-    unique: [true, 'Username already exists']
+    unique: [true, 'Username already exists'],
+    validate: {
+      validator: isAlphanumeric,
+      message: 'Username may only have letters and numbers'
+    }
   },
 
   email: {
@@ -40,6 +45,27 @@ const UserSchema = new mongoose.Schema({
     createdAt: 'created_at'
   }
 })
+
+UserSchema.pre('save', function (next) {
+  const user = this
+
+  // if user is created or if the password is modified, then save the hashed password
+  if (this.isModified('password') || this.isNew) {
+    passwordMethods.hash(user.password)
+      .then(hashedPassword => {
+        user.password = hashedPassword
+        next()
+      })
+      .catch(err => next(err))
+  } else {
+    return next()
+  }
+})
+
+UserSchema.methods.comparePassword = function (string) {
+  const hash = this.password
+  return passwordMethods.compare(string, hash)
+}
 
 UserSchema.plugin(uniqueValidator)
 
