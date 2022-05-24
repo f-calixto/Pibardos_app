@@ -1,8 +1,9 @@
-package group
+package user
 
 import (
 	// std lib
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -35,26 +36,29 @@ func JwtMiddleware(next http.Handler) http.Handler {
 			return []byte(secretKey), nil
 		})
 		if err != nil {
-			// manage error
+			fmt.Println("3")
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 		claims, ok := tk.Claims.(*Claims)
 		if !ok {
-			// manage error
+			fmt.Println("4")
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		// check expiry date
 		if claims.ExpiresAt < time.Now().UTC().Unix() {
-			// manage error
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
 		// adding id's to the context in order to pass it in the handler
-		if claims.userId == "" {
-			// manage error
+		if claims.UserId == "" {
+			fmt.Println("5")
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		ctx = context.WithValue(ctx, UserIdKey{}, claims.userId)
+		ctx = context.WithValue(ctx, UserIdKey{}, claims.UserId)
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})

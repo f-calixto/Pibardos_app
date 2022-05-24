@@ -30,13 +30,15 @@ func NewHandler(service Service, logger log.Logger) Handlers {
 }
 
 func (h *handlers) CreateGroup(w http.ResponseWriter, r *http.Request) {
-	userId := r.Context().Value(UserIdKey{})
-	// me paso el error por el culo. Si el archivo es nulo o invalido: file == nil, puedo validarlo asi
+	// userId := r.Context().Value(UserIdKey{})
+	// admin_id := fmt.Sprintf("%v", userId) // interface to string
+
+	// if file is invalid => file == nil: I can validate this way, for now I won use the error
 	file, _, _ := r.FormFile("avatar")
 	req := CreateGroupRequest{
 		name:     r.FormValue("name"),
 		country:  r.FormValue("country"),
-		admin_id: userId.(string),
+		admin_id: "admin_id",
 		file:     file,
 	}
 	resp, err := h.service.CreateGroup(req)
@@ -46,8 +48,8 @@ func (h *handlers) CreateGroup(w http.ResponseWriter, r *http.Request) {
 	httpSuccessResponse := HttpSuccessResponseBody{}
 	httpSuccessResponse.StatusCode = 201
 	httpSuccessResponse.Data = append(httpSuccessResponse.Data, resp)
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(httpSuccessResponse)
 }
 

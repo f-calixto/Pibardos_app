@@ -16,23 +16,30 @@ import (
 )
 
 var (
-	ApiPort           = os.Getenv("API_PORT")
-	PostgresDB        = os.Getenv("POSTGRES_DB")
-	PostgresContainer = os.Getenv("POSTGRES_CONTAINER")
-	PostgresPort      = os.Getenv("POSTGRES_PORT")
-	PostgresPwd       = os.Getenv("POSTGRES_PWD")
+	ApiPort      = os.Getenv("API_PORT")
+	PostgresDB   = os.Getenv("POSTGRES_DB")
+	PostgresUser = os.Getenv("POSTGRES_USER")
+	PostgresPort = os.Getenv("POSTGRES_PORT")
+	PostgresPwd  = os.Getenv("POSTGRES_PWD")
+	PostgresHost = os.Getenv("POSTGRES_HOST")
 )
 
 func main() {
 	logger := log.NewLogger()
 
 	// create postgres connection
-	postgresConnString := fmt.Sprintf("postgres://postgres:%s@%s:%s/%s?sslmode=disable", PostgresPwd, PostgresContainer, PostgresPort, PostgresDB)
+	postgresConnString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", PostgresUser, PostgresPwd, PostgresHost, PostgresPort, PostgresDB)
 	postgresDb, err := sql.Open("postgres", postgresConnString)
 	if err != nil {
+		logger.Error("main.go", "main", err.Error())
 		panic(err)
 	}
 	defer postgresDb.Close()
+	err = postgresDb.Ping()
+	if err != nil {
+		logger.Error("main.go", "main", err.Error())
+		panic(err)
+	}
 
 	// initialize repository layer
 	repository := group.NewRepository(postgresDb, logger)

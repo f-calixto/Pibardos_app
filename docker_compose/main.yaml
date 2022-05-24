@@ -92,9 +92,9 @@ services:
   ########################
   ####### postgres #######
   ########################
-  postgres:
+  users_groups_postgres:
     image: arm32v7/postgres:latest
-    container_name: postgres
+    container_name: users_groups_postgres
     restart: always
     expose:
       - "5432"
@@ -103,7 +103,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_PIBARDOS_APP}
       - POSTGRES_DB=pibardos_app
     volumes:
-      - ../db:/docker-entrypoint-initdb.d/
+      - ../db/users_and_groups.sh:/docker-entrypoint-initdb.d/
       - /data/postgres_data_pibardos_app:/var/lib/postgresql/data
 
   ########################
@@ -122,6 +122,24 @@ services:
       - VIRTUAL_PORT=8080
       - LETSENCRYPT_HOST=adminer.pibardosapp.com
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+    
+  ########################
+  ####### rabbitmq #######
+  ########################
+  rabbitmq_pibardos_app:
+    image: ronnyroos/rpi-rabbitmq
+    container_name: rabbitmq_pibardos_app
+    restart: always
+    ports:
+        - 5672:5672
+        - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=pibardos
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD_PIBARDOS_APP}
+    volumes:
+      - /data/rabbit:/data/mnesia
+      - /data/rabbitmq:/var/lib/rabbitmq/
+
       
 volumes:
   certs:
