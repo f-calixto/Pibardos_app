@@ -103,7 +103,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_PIBARDOS_APP}
       - POSTGRES_DB=pibardos_app
     volumes:
-      - ../db/users_and_groups.sh:/docker-entrypoint-initdb.d/
+      - ../go/user_service/db:/docker-entrypoint-initdb.d/
       - /data/postgres_data_pibardos_app:/var/lib/postgresql/data
 
   ########################
