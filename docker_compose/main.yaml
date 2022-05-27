@@ -130,9 +130,11 @@ services:
     image: ronnyroos/rpi-rabbitmq
     container_name: rabbitmq_pibardos_app
     restart: always
+    expose:
+      - "5672"
     ports:
-        - 5672:5672
-        - 15672:15672
+      - 5672:5672
+      - 15672:15672
     environment:
       - RABBITMQ_DEFAULT_USER=pibardos
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD_PIBARDOS_APP}
