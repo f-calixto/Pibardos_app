@@ -1,11 +1,13 @@
 package user
 
 import (
+	// std lib
 	"database/sql"
-	"errors"
 	"fmt"
 	"strings"
 
+	// Internal
+	"github.com/coding-kiko/user_service/pkg/errors"
 	"github.com/coding-kiko/user_service/pkg/log"
 )
 
@@ -15,9 +17,11 @@ type repo struct {
 }
 
 type Repository interface {
-	UpdateUser(user UpsertUserRequest) (User, error)
+	UpdateUser(req UpsertUserRequest) (User, error)
 	InsertUser(user User) (User, error)
-	UpdateAvatar(user User) (User, error)
+	UpdateAvatar(req UpdateAvatarRequest) (User, error)
+	GetUser(id string) (User, error)
+	GetUserGroups(id string) ([]Group, error)
 }
 
 func NewRepository(db *sql.DB, logger log.Logger) Repository {
@@ -30,21 +34,57 @@ func NewRepository(db *sql.DB, logger log.Logger) Repository {
 var (
 	insertUserQuery = `INSERT INTO users(id, username, email, created_at, country, birthdate, status, avatar) 
 						Values($1, $2, $3, $4, $5, $6, $7, $8)`
-	getUserQuery      = `SELECT id, username, email, created_at, country, birthdate, status, avatar FROM users WHERE id = $1`
-	updateAvatarQuery = `UPDATE users SET avatar = $1 WHERE id = $2`
-	baseUpdateQuery   = `UPDATE users SET `
+	getUserQuery       = `SELECT id, username, email, created_at, country, birthdate, status, avatar FROM users WHERE id = $1`
+	updateAvatarQuery  = `UPDATE users SET avatar = $1 WHERE id = $2`
+	baseUpdateQuery    = `UPDATE users SET `
+	getUserGroupsQuery = `SELECT groups.id, name, size, admin_id, country, avatar, created_at FROM users_groups INNER JOIN groups ON groups.id = users_groups.group_id WHERE users_groups.user_id = $1`
 )
 
-// update user avatar by id
-func (r *repo) UpdateAvatar(user User) (User, error) {
-	_, err := r.db.Exec(updateAvatarQuery, user.Avatar, user.Id)
+// Get all of one user's groups
+func (r *repo) GetUserGroups(id string) ([]Group, error) {
+	groups := []Group{}
+
+	rows, err := r.db.Query(getUserGroupsQuery, id)
 	if err != nil {
-		r.logger.Error("repository.go", "InsertUser", err.Error())
-		return User{}, err // probably user not found
+		return []Group{}, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		group := Group{}
+		err := rows.Scan(&group.Id, &group.Name, &group.Size, &group.Admin_id, &group.Country, &group.Avatar, &group.Created_at)
+		if err != nil {
+			return []Group{}, err
+		}
+		groups = append(groups, group)
+	}
+	r.logger.Info("repository.go", "GetUserGroups", "User groups retrieved successfully")
+	return groups, nil
+}
+
+// Get user by id
+func (r *repo) GetUser(id string) (User, error) {
+	user := User{}
+	err := r.db.QueryRow(getUserQuery, id).Scan(&user.Id, &user.Username, &user.Email, &user.Created_at, &user.Country, &user.Birthdate, &user.Status, &user.Avatar)
+	if err != nil {
+		return User{}, errors.NewNotFound()
+	}
+	return user, nil
+}
+
+// update user avatar by id
+func (r *repo) UpdateAvatar(req UpdateAvatarRequest) (User, error) {
+	_, err := r.db.Exec(updateAvatarQuery, req.Avatar, req.Id)
+	if err != nil {
+		return User{}, errors.NewNotFound()
 	}
 
-	r.logger.Info("repository.go", "InsertUser", "avatar updated successfully")
-	return user, nil
+	updatedUser, err := r.GetUser(req.Id)
+	if err != nil {
+		return User{}, err
+	}
+	r.logger.Info("repository.go", "UpdateAvatar", "avatar updated successfully")
+	return updatedUser, nil
 }
 
 // insert new user in the database
@@ -54,7 +94,7 @@ func (r *repo) InsertUser(user User) (User, error) {
 	_, err := r.db.Exec(insertUserQuery, user.Id, user.Username, user.Email, user.Created_at, user.Country, user.Birthdate, user.Status, user.Avatar)
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate") {
-			return User{}, errors.New("username or email already in use") // this should be validated by auth
+			return User{}, errors.NewInvalidCredentials()
 		}
 		r.logger.Error("repository.go", "InsertUser", err.Error())
 		return User{}, err
@@ -66,38 +106,34 @@ func (r *repo) InsertUser(user User) (User, error) {
 
 // Update one or many arbitrary values from user - not including avatar
 func (r *repo) UpdateUser(req UpsertUserRequest) (User, error) {
-	r.logger.Info("repository.go", "InsertUser", "updating user")
-
 	updateQuery, args, err := PatchQueryConstructor(req)
 	if err != nil {
-		r.logger.Error("repository.go", "UpdateUser", err.Error())
 		return User{}, err
 	}
-	_, err = r.db.Exec(updateQuery, args)
+
+	_, err = r.db.Exec(updateQuery, args...)
 	if err != nil {
-		r.logger.Error("repository.go", "UpdateUser", err.Error())
 		if strings.Contains(err.Error(), "duplicate") {
-			return User{}, errors.New("username or email already in use") // this should be validated by auth
+			return User{}, errors.NewInvalidCredentials()
 		}
-		return User{}, err // probably invalid id
+		return User{}, errors.NewNotFound()
 	}
 
-	updatedUser := User{}
-	err = r.db.QueryRow(getUserQuery, req.Id).Scan(&updatedUser.Id, &updatedUser.Username, &updatedUser.Email, &updatedUser.Created_at, &updatedUser.Country, &updatedUser.Birthdate, &updatedUser.Status, &updatedUser.Avatar)
+	updatedUser, err := r.GetUser(*req.Id)
 	if err != nil {
-		r.logger.Error("repository.go", "UpdateUser", err.Error())
 		return User{}, err
 	}
 
-	r.logger.Info("repository.go", "updateUser", "user updated successfully")
+	r.logger.Info("repository.go", "UpdateUser", "user updated successfully")
 	return updatedUser, nil
 }
 
-// creates update query dynamically depending on the fields to be updated
-func PatchQueryConstructor(req UpsertUserRequest) (string, interface{}, error) {
+// creates user update query dynamically depending on the fields to be updated
+func PatchQueryConstructor(req UpsertUserRequest) (string, []interface{}, error) {
 	i := 1 // increments accordingly eith the number of args
 	queryParts := make([]string, 0)
 	args := make([]interface{}, 0)
+	query := baseUpdateQuery
 
 	if req.Username != nil {
 		field := fmt.Sprintf("username = $%d", i)
@@ -131,10 +167,10 @@ func PatchQueryConstructor(req UpsertUserRequest) (string, interface{}, error) {
 	}
 
 	if len(queryParts) == 0 {
-		return "", nil, errors.New("no valid field selected for update")
+		return "", nil, errors.NewInvalidUpdate()
 	}
-	baseUpdateQuery += strings.Join(queryParts, ", ") + fmt.Sprintf(" WHERE id = $%d", i)
+	query += strings.Join(queryParts, ", ") + fmt.Sprintf(" WHERE id = $%d", i)
 	args = append(args, *req.Id)
 
-	return baseUpdateQuery, args, nil
+	return query, args, nil
 }

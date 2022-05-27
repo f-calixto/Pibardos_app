@@ -3,9 +3,6 @@ package user
 import (
 	// std lib
 	"mime/multipart"
-
-	// third party
-	"github.com/golang-jwt/jwt"
 )
 
 // Update or insert
@@ -25,15 +22,34 @@ type UpdateUserRequest struct {
 	Status    *string `json:"status,omitempty"`
 }
 
+type UpdateAvatarRequest struct {
+	Id     string
+	Avatar string
+}
+
+type GetUserRequest struct {
+	Id string
+}
+
 type User struct {
-	Id         string `json:"id,omitempty"`
-	Username   string `json:"username,omitempty"`
-	Email      string `json:"email,omitempty"`
-	Country    string `json:"country,omitempty"`
-	Birthdate  string `json:"birthdate,omitempty"`
-	Created_at string `json:"created_at,omitempty"`
-	Status     string `json:"status,omitempty"`
-	Avatar     string `json:"avatar,omitempty"`
+	Id         string `json:"id"`
+	Username   string `json:"username"`
+	Email      string `json:"email"`
+	Country    string `json:"country"`
+	Birthdate  string `json:"birthdate"`
+	Created_at string `json:"created_at"`
+	Status     string `json:"status"`
+	Avatar     string `json:"avatar"`
+}
+
+type Group struct {
+	Id         string `json:"id"`
+	Name       string `json:"name"`
+	Size       int64  `json:"size"`
+	Admin_id   string `json:"admin_id"`
+	Country    string `json:"country"`
+	Avatar     string `json:"avatar"`
+	Created_at string `json:"created_at"`
 }
 
 type FileRequest struct {
@@ -41,12 +57,11 @@ type FileRequest struct {
 	File multipart.File
 }
 
-type UserIdKey struct {
+type File struct {
+	Name     string
+	Data     []byte
+	MimeType string
 }
 
-// used to parse jwt payload
-// used in middleware.go
-type Claims struct {
-	UserId string `json:"userId"`
-	jwt.StandardClaims
+type UserIdKey struct {
 }

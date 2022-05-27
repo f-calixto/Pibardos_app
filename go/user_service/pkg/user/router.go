@@ -14,8 +14,8 @@ func NewRouter(handlers Handlers, logger log.Logger) *mux.Router {
 
 	router.Path("/{id}").Methods("PATCH").HandlerFunc(handlers.UpdateUser)
 	router.Path("/{id}/avatar").Methods("PATCH").HandlerFunc(handlers.UpdateUserAvatar)
-	// router.Path("/{id}/groups").Methods("GET").HandlerFunc(handler.GetUserGroups)
-	// router.Path("/{id}").Methods("GET").HandlerFunc(handler.GetUser)
+	router.Path("/{id}").Methods("GET").HandlerFunc(handlers.GetUser)
+	router.Path("/{id}/groups").Methods("GET").HandlerFunc(handlers.GetUserGroups)
 	router.Use(JwtMiddleware)
 
 	return router

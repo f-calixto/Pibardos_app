@@ -10,7 +10,6 @@ import (
 	"github.com/coding-kiko/avatar_service/pkg/log"
 
 	// third party
-
 	"golang.org/x/image/draw"
 )
 

@@ -8,48 +8,69 @@ import (
 )
 
 func TestPatchQueryConstructor(t *testing.T) {
-	// test 1 - valid email update
-	req := []byte(`{"id":"12345678","email": "new_email"}`)
-	r := UpsertUserRequest{}
-	_ = json.Unmarshal(req, &r)
-	query, args, err := PatchQueryConstructor(r)
-	expectedQuery := "UPDATE users SET email = $1 WHERE id = $2"
-	assert.Nil(t, err)
-	assert.NotEmpty(t, args)
-	assert.Equal(t, query, expectedQuery)
-}
-
-func ValidPatchQueryConstructor2(t *testing.T) {
-	// test 2 - multiple valid updates
-	req := []byte(`{"id":"12345678","email": "new_email", "status": "desayunando", "country": "br"}`)
-	r := UpsertUserRequest{}
-	_ = json.Unmarshal(req, &r)
-	query, args, err := PatchQueryConstructor(r)
-	expectedQuery := "UPDATE users SET email = $1, status = $2, country = $3 WHERE id = $4"
-	assert.Nil(t, err)
-	assert.NotEmpty(t, args)
-	assert.Equal(t, query, expectedQuery)
-}
-
-func ValidPatchQueryConstructor4(t *testing.T) {
-	// test 4 - multiple valid updates and one ignored field
-	req := []byte(`{"id":"12345678","email": "new_email", "status": "desayunando", "country": "br", "created_at": "12/04/5666"}`)
-	r := UpsertUserRequest{}
-	_ = json.Unmarshal(req, &r)
-	query, args, err := PatchQueryConstructor(r)
-	expectedQuery := "UPDATE users SET email = $1, status = $2, country = $3 WHERE id = $4"
-	assert.Nil(t, err)
-	assert.NotEmpty(t, args)
-	assert.Equal(t, query, expectedQuery)
-}
-
-func ValidPatchQueryConstructor3(t *testing.T) {
-	// test 3 - no valid fields
-	req := []byte(`{"id":"12345678"}`)
-	r := UpsertUserRequest{}
-	_ = json.Unmarshal(req, &r)
-	query, args, err := PatchQueryConstructor(r)
-	assert.Nil(t, args)
-	assert.Equal(t, query, "")
-	assert.Error(t, err)
+	testCases := []struct {
+		name          string
+		reqJson       string
+		expectedQuery string
+		checkResponse func(t *testing.T, expectedQuery string, query string, args []interface{}, err error)
+	}{
+		{
+			name:          "valid email update",
+			reqJson:       `{"id":"12345678","email": "new_email"}`,
+			expectedQuery: "UPDATE users SET email = $1 WHERE id = $2",
+			checkResponse: func(t *testing.T, expectedQuery string, query string, args []interface{}, err error) {
+				assert.Nil(t, err)
+				assert.NotEmpty(t, args)
+				assert.Equal(t, query, expectedQuery)
+			},
+		},
+		{
+			name:          "multiple valid updates",
+			reqJson:       `{"id":"12345678","email": "new_email", "status": "desayunando", "country": "br"}`,
+			expectedQuery: "UPDATE users SET email = $1, country = $2, status = $3 WHERE id = $4",
+			checkResponse: func(t *testing.T, expectedQuery string, query string, args []interface{}, err error) {
+				assert.Nil(t, err)
+				assert.NotEmpty(t, args)
+				assert.Equal(t, query, expectedQuery)
+			},
+		},
+		{
+			name:          "multiple valid updates and one ignored field",
+			reqJson:       `{"id":"12345678","email": "new_email", "status": "desayunando", "country": "br", "created_at": "12/04/5666"}`,
+			expectedQuery: "UPDATE users SET email = $1, country = $2, status = $3 WHERE id = $4",
+			checkResponse: func(t *testing.T, expectedQuery string, query string, args []interface{}, err error) {
+				assert.Nil(t, err)
+				assert.NotEmpty(t, args)
+				assert.Equal(t, query, expectedQuery)
+			},
+		},
+		{
+			name:          "no valid fields",
+			reqJson:       `{"id":"12345678"}`,
+			expectedQuery: "",
+			checkResponse: func(t *testing.T, expectedQuery string, query string, args []interface{}, err error) {
+				assert.Nil(t, args)
+				assert.Equal(t, query, expectedQuery)
+				assert.Error(t, err)
+			},
+		},
+		{
+			name:          "empty request",
+			reqJson:       `{}`,
+			expectedQuery: "",
+			checkResponse: func(t *testing.T, expectedQuery string, query string, args []interface{}, err error) {
+				assert.Nil(t, args)
+				assert.Equal(t, query, expectedQuery)
+				assert.Error(t, err)
+			},
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			r := UpsertUserRequest{}
+			_ = json.Unmarshal([]byte(tc.reqJson), &r)
+			query, args, err := PatchQueryConstructor(r)
+			tc.checkResponse(t, tc.expectedQuery, query, args, err)
+		})
+	}
 }

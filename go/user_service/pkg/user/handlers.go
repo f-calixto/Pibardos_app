@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	// Internal
+	"github.com/coding-kiko/user_service/pkg/errors"
 	"github.com/coding-kiko/user_service/pkg/log"
 
 	// third party
@@ -21,6 +22,8 @@ type handlers struct {
 type Handlers interface {
 	UpdateUser(w http.ResponseWriter, r *http.Request)
 	UpdateUserAvatar(w http.ResponseWriter, r *http.Request)
+	GetUser(w http.ResponseWriter, r *http.Request)
+	GetUserGroups(w http.ResponseWriter, r *http.Request)
 }
 
 func NewHandler(service Service, logger log.Logger) Handlers {
@@ -30,9 +33,72 @@ func NewHandler(service Service, logger log.Logger) Handlers {
 	}
 }
 
-func (h *handlers) UpdateUser(w http.ResponseWriter, r *http.Request) {
+func (h *handlers) GetUserGroups(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	// extract user id passed by context by jwtMiddleware
 	userId := fmt.Sprintf("%v", r.Context().Value(UserIdKey{}))
+
+	// check if id path var is the same as jwt authenticated user id
+	if userId != mux.Vars(r)["id"] {
+		h.logger.Error("handlers.go", "GetUserGroups", "malformed id in path param")
+		statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("jwt id and path id do not match"))
+		w.WriteHeader(statusCode)
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
+	groups, err := h.service.GetUserGroups(userId)
+	if err != nil {
+		statusCode, resp := errors.CreateResponse(err)
+		w.WriteHeader(statusCode)
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(groups)
+}
+
+func (h *handlers) GetUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	// extract user id passed by context by jwtMiddleware
+	userId := fmt.Sprintf("%v", r.Context().Value(UserIdKey{}))
+
+	// check if id path var is the same as jwt authenticated user id
+	if userId != mux.Vars(r)["id"] {
+		h.logger.Error("handlers.go", "GetUser", "malformed id in path param")
+		statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("jwt id and path id do not match"))
+		w.WriteHeader(statusCode)
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
+
+	user, err := h.service.GetUser(userId)
+	if err != nil {
+		statusCode, resp := errors.CreateResponse(err)
+		w.WriteHeader(statusCode)
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
+
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(user)
+}
+
+func (h *handlers) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	// extract user id passed by context by jwtMiddleware
+	userId := fmt.Sprintf("%v", r.Context().Value(UserIdKey{}))
+
+	// check if id path var is the same as jwt authenticated user id
+	if userId != mux.Vars(r)["id"] {
+		h.logger.Error("handlers.go", "UpdateUser", "malformed id in path param")
+		statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("jwt id and path id do not match"))
+		w.WriteHeader(statusCode)
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
 
 	req := UpdateUserRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -48,19 +114,29 @@ func (h *handlers) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	user, err := h.service.UpsertUser(upsertReq)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
+		statusCode, resp := errors.CreateResponse(err)
+		w.WriteHeader(statusCode)
+		json.NewEncoder(w).Encode(resp)
 		return
 	}
-	SuccessfulResponse(w, user)
+
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(user)
 }
 
 func (h *handlers) UpdateUserAvatar(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	// extract user id passed by context by jwtMiddleware
 	userId := fmt.Sprintf("%v", r.Context().Value(UserIdKey{}))
 
+	// check if id path var is the same as jwt authenticated user id
 	if userId != mux.Vars(r)["id"] {
-		h.logger.Error("handlers.go", "UpdateUserAvatar", userId+" != "+mux.Vars(r)["id"])
-		w.WriteHeader(http.StatusUnauthorized)
+		h.logger.Error("handlers.go", "UpdateUserAvatar", "malformed id in path param")
+		statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("jwt id and path id do not match"))
+		w.WriteHeader(statusCode)
+		json.NewEncoder(w).Encode(resp)
+		return
 	}
 
 	// if file is invalid => file == nil: I can validate this way, for now I won use the error
@@ -72,14 +148,12 @@ func (h *handlers) UpdateUserAvatar(w http.ResponseWriter, r *http.Request) {
 	user, err := h.service.UpdateUserAvatar(req)
 	if err != nil {
 		h.logger.Error("handlers.go", "UpdateUserAvatar", err.Error())
-		w.WriteHeader(http.StatusBadRequest)
+		statusCode, resp := errors.CreateResponse(err)
+		w.WriteHeader(statusCode)
+		json.NewEncoder(w).Encode(resp)
 		return
 	}
-	SuccessfulResponse(w, user)
-}
 
-func SuccessfulResponse(w http.ResponseWriter, user User) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(200)
 	json.NewEncoder(w).Encode(user)
 }

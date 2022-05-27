@@ -3,9 +3,10 @@ package user
 import (
 	// Internal
 	"encoding/json"
-	"errors"
 	"os"
 
+	// Internal
+	"github.com/coding-kiko/user_service/pkg/errors"
 	"github.com/coding-kiko/user_service/pkg/log"
 
 	// Third party
@@ -49,7 +50,7 @@ func (r *rabbitConsumer) UsersQueue() {
 
 	q, err := ch.QueueDeclare(
 		UsersQueue, // name
-		false,      // durable
+		true,       // durable
 		false,      // delete when unused
 		false,      // exclusive
 		false,      // no-wait
@@ -62,7 +63,7 @@ func (r *rabbitConsumer) UsersQueue() {
 	msgs, err := ch.Consume(
 		q.Name, // queue
 		"",     // consumer
-		true,   // auto-ack - TODO manual acknowledgment
+		true,   // auto-ack
 		false,  // exclusive
 		false,  // no-local
 		false,  // no-wait
@@ -72,6 +73,7 @@ func (r *rabbitConsumer) UsersQueue() {
 		r.logger.Error("rabbitmq.go", "NewUsersQueueConsumer", err.Error())
 		panic(err.Error())
 	}
+	r.logger.Info("rabbitmq.go", "UsersQueue", "Started listening on usersQueue")
 	forever := make(chan bool)
 	go func() {
 		for d := range msgs {
@@ -81,12 +83,10 @@ func (r *rabbitConsumer) UsersQueue() {
 			err = json.Unmarshal(d.Body, &req)
 			if err != nil {
 				r.logger.Error("rabbitmq.go", "NewUsersQueueConsumer", err.Error())
-				panic(err.Error())
 			}
 			_, err = r.service.UpsertUser(req)
-			if err != nil { // dont akcnowledge TODO
+			if err != nil {
 				r.logger.Error("rabbitmq.go", "NewUsersQueueConsumer", err.Error())
-				panic(err.Error())
 			}
 		}
 	}()
@@ -94,14 +94,13 @@ func (r *rabbitConsumer) UsersQueue() {
 }
 
 // Describes any producer for a rabbit queue
-
 type rabbitProducer struct {
 	conn   *amqp.Connection
 	logger log.Logger
 }
 
 type RabbitProducer interface {
-	AvatarQueue(avatar []byte, filename string) error
+	AvatarQueue(file File) error
 }
 
 func NewRabbitProducer(conn *amqp.Connection, logger log.Logger) RabbitProducer {
@@ -112,23 +111,22 @@ func NewRabbitProducer(conn *amqp.Connection, logger log.Logger) RabbitProducer 
 }
 
 // send new avatar to be stored in the avatar service
-func (r *rabbitProducer) AvatarQueue(avatar []byte, filename string) error {
+func (r *rabbitProducer) AvatarQueue(file File) error {
 	// create rabbit connection channel
 	ch, err := r.conn.Channel()
 	if err != nil {
-		r.logger.Error("main.go", "main", err.Error())
-		panic(err)
+		return errors.NewRabbitError("failed to create channel")
 	}
 	defer ch.Close()
 
 	// declare queue
 	q, err := ch.QueueDeclare(AvatarQueue, true, false, false, false, nil)
 	if err != nil {
-		return errors.New("failed to declare a queue")
+		return errors.NewRabbitError("failed to declare a queue")
 	}
 
 	headers := make(map[string]interface{})
-	headers["filename"] = filename
+	headers["filename"] = file.Name
 	err = ch.Publish(
 		"",     // exchange
 		q.Name, // routing key
@@ -138,10 +136,10 @@ func (r *rabbitProducer) AvatarQueue(avatar []byte, filename string) error {
 			Headers:      headers,
 			DeliveryMode: amqp.Persistent,
 			ContentType:  "text/plain",
-			Body:         avatar,
+			Body:         file.Data,
 		})
 	if err != nil {
-		return errors.New("failed to publish message")
+		return errors.NewRabbitError("failed to publish message")
 	}
 	r.logger.Info("rabbitmq.go", "AvatarQueue", "avatar published")
 	return nil
