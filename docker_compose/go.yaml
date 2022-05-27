@@ -15,7 +15,7 @@ services:
     environment:
       - RABBITMQ_USER=pibardos
       - RABBITMQ_PWD=${RABBITMQ_PASSWORD_PIBARDOS_APP}
-	    - RABBITMQ_HOST=rabbitmq_pibardos_app
+      - RABBITMQ_HOST=rabbitmq_pibardos_app
       - RABBITMQ_PORT=5672
 
       - AVATAR_QUEUE={$AVATAR_QUEUE_PIBARDOS_APP}
