@@ -9,7 +9,7 @@ import (
 	"time"
 
 	// third party
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 )
 
 var secretKey = os.Getenv("JWT_SECRET")
