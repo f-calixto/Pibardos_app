@@ -2,11 +2,11 @@ version: '3'
 
 services:
   ########################
-  #### group_service #####
+  ##### user_service #####
   ########################
-  group_service:
-    build: ../go/group_service
-    container_name: group_service
+  user_service:
+    build: ../go/user_service
+    container_name: user_service
     restart: always
     ports:
       - 5000:5000
@@ -20,7 +20,7 @@ services:
       - POSTGRES_PWD=${POSTGRES_PASSWORD_PIBARDOS_APP}
       - API_PORT=5000
       - VIRTUAL_PORT=5000
-      - VIRTUAL_PATH=/groups/
+      - VIRTUAL_PATH=/users/
       - VIRTUAL_DEST=/
       - VIRTUAL_HOST=api.pibardosapp.com
       - LETSENCRYPT_HOST=api.pibardosapp.com
