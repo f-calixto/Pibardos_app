@@ -128,8 +128,8 @@ func ValidateFile(file multipart.File) (File, error) {
 		return File{}, errors.NewFileError("error reading file")
 	}
 	mimeType := http.DetectContentType(data)
-	if mimeType != "image/png" && mimeType != "image/jpg" && mimeType != "image/jpeg" && mimeType != "application/octet-stream" {
-		return File{}, errors.NewFileError("file must be an image")
+	if mimeType != "image/jpg" && mimeType != "image/jpeg" {
+		return File{}, errors.NewFileError("file must be jpg or jpeg")
 	}
 
 	return File{
@@ -141,9 +141,11 @@ func ValidateFile(file multipart.File) (File, error) {
 func NewAvatar(file File, id string) File {
 	// parse extension
 	ext := strings.Split(file.MimeType, "/")[1]
+
+	/* for now only accpet jpg/jpeg so it is irrelevant
 	if ext == "octet-stream" {
 		ext = "heic"
-	}
+	}*/
 
 	// hash id and generate file name: hashedId.ext
 	hashedId := md5.Sum([]byte(id))
