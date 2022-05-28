@@ -18,7 +18,7 @@ services:
       - RABBITMQ_HOST=rabbitmq_pibardos_app
       - RABBITMQ_PORT=5672
 
-      - AVATAR_QUEUE={$AVATAR_QUEUE_PIBARDOS_APP}
+      - AVATAR_QUEUE=${AVATAR_QUEUE_PIBARDOS_APP}
       - USERS_QUEUE=${USERS_QUEUE_PIBARDOS_APP}
 
       - POSTGRES_HOST=users_groups_postgres
@@ -57,7 +57,7 @@ services:
       - RABBITMQ_HOST=rabbitmq_pibardos_app
       - RABBITMQ_PORT=5672
 
-      - AVATAR_QUEUE={$AVATAR_QUEUE_PIBARDOS_APP}
+      - AVATAR_QUEUE=${AVATAR_QUEUE_PIBARDOS_APP}
 
       - STATIC_PATH=${STATIC_PIBARDOS_APP}
 

@@ -20,6 +20,10 @@ type service struct {
 	logger         log.Logger
 }
 
+const (
+	defaultUserAvatar = "default_user_avatar.jpeg"
+)
+
 type Service interface {
 	UpsertUser(req UpsertUserRequest) (User, error)
 	UpdateUserAvatar(req FileRequest) (User, error)
@@ -34,10 +38,6 @@ func NewService(repository Repository, rabbitProducer RabbitProducer, logger log
 		logger:         logger,
 	}
 }
-
-const (
-	defaultUserAvatar = "default_user.jpg"
-)
 
 func (s *service) GetUser(id string) (User, error) {
 	user, err := s.repository.GetUser(id)

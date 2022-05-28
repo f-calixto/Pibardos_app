@@ -127,7 +127,7 @@ services:
   ####### rabbitmq #######
   ########################
   rabbitmq_pibardos_app:
-    image: ronnyroos/rpi-rabbitmq
+    image: rabbitmq:3-management-alpine
     container_name: rabbitmq_pibardos_app
     restart: always
     expose:

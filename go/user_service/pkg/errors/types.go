@@ -137,3 +137,22 @@ func NewJwtBadRequest(msg ...string) *JwtBadRequest {
 }
 
 // ------------------------------------------------------------
+
+// method not allowed
+type MethodNotAllowed struct {
+	Err error
+}
+
+func (e *MethodNotAllowed) Error() string {
+	return fmt.Sprintf("%v", e.Err)
+}
+
+func NewMethodNotAllowed(msg ...string) *MethodNotAllowed {
+	defaultMsg := "method not allowed"
+	if len(msg) == 0 {
+		return &MethodNotAllowed{Err: errors.New(defaultMsg)}
+	}
+	return &MethodNotAllowed{Err: errors.New(msg[0])}
+}
+
+// ---

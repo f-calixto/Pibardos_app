@@ -33,5 +33,5 @@ func (l *Logger) Info(file string, method string, message string) {
 }
 
 func (l *Logger) Debug(message string) {
-	l.info.Println(message)
+	l.debug.Println(message)
 }

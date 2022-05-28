@@ -24,6 +24,8 @@ type Handlers interface {
 	UpdateUserAvatar(w http.ResponseWriter, r *http.Request)
 	GetUser(w http.ResponseWriter, r *http.Request)
 	GetUserGroups(w http.ResponseWriter, r *http.Request)
+
+	MethodNotAllowedHandler() http.Handler
 }
 
 func NewHandler(service Service, logger log.Logger) Handlers {
@@ -156,4 +158,14 @@ func (h *handlers) UpdateUserAvatar(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(200)
 	json.NewEncoder(w).Encode(user)
+}
+
+// override default gorilla method not allowed handler
+func (h *handlers) MethodNotAllowedHandler() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		statusCode, resp := errors.CreateResponse(errors.NewMethodNotAllowed("method not allowed"))
+		w.WriteHeader(statusCode)
+		json.NewEncoder(w).Encode(resp)
+	})
 }

@@ -18,5 +18,8 @@ func NewRouter(handlers Handlers, logger log.Logger) *mux.Router {
 	router.Path("/{id}/groups").Methods("GET").HandlerFunc(handlers.GetUserGroups)
 	router.Use(JwtMiddleware)
 
+	// override default gorilla 405 handler
+	router.MethodNotAllowedHandler = handlers.MethodNotAllowedHandler()
+
 	return router
 }

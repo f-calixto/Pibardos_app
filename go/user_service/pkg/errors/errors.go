@@ -80,6 +80,13 @@ func CreateResponse(e error) (int, Response) {
 		err.InternalMessage = e.Error()
 		resp.ErrorName = "authorization error"
 		resp.Errors = append(resp.Errors, err)
+	case *MethodNotAllowed:
+		statusCode = 405
+		err.Field = ""
+		err.UserMessage = e.Error()
+		err.InternalMessage = e.Error()
+		resp.ErrorName = "request error"
+		resp.Errors = append(resp.Errors, err)
 	default:
 		statusCode = 500
 		err.Field = ""
