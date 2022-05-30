@@ -70,3 +70,19 @@ type AccessCode struct {
 
 type JoinGroupRequest struct {
 }
+
+type User struct {
+	Id         string `json:"id"`
+	Username   string `json:"username"`
+	Email      string `json:"email"`
+	Country    string `json:"country"`
+	Birthdate  string `json:"birthdate"`
+	Created_at string `json:"created_at"`
+	Status     string `json:"status"`
+	Avatar     string `json:"avatar"`
+}
+
+type GetGroupMembersRequest struct {
+	Id     string
+	Amount int
+}

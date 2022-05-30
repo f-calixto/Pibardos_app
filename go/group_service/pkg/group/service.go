@@ -37,6 +37,7 @@ type Service interface {
 	UpdateGroupAvatar(req FileRequest) (Group, error)
 	GenerateAccessCode(req AccessCodeRequest) (AccessCode, error)
 	JoinGroup(req AccessCode) (Group, error)
+	GetGroupMembers(req GetGroupMembersRequest) ([]User, error)
 }
 
 func NewService(repository Repository, rabbitProducer RabbitProducer, logger log.Logger) Service {
@@ -45,6 +46,14 @@ func NewService(repository Repository, rabbitProducer RabbitProducer, logger log
 		rabbitProducer: rabbitProducer,
 		logger:         logger,
 	}
+}
+
+func (s *service) GetGroupMembers(req GetGroupMembersRequest) ([]User, error) {
+	members, err := s.repository.GetGroupMembers(req)
+	if err != nil {
+		return []User{}, err
+	}
+	return members, nil
 }
 
 func (s *service) JoinGroup(req AccessCode) (Group, error) {

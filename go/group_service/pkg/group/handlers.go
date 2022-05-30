@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	// Internal
 	"github.com/coding-kiko/group_service/pkg/errors"
@@ -31,9 +32,34 @@ type Handlers interface {
 	UpdateGroupAvatar(w http.ResponseWriter, r *http.Request)
 	GenerateAccessCode(w http.ResponseWriter, r *http.Request)
 	JoinGroup(w http.ResponseWriter, r *http.Request)
-	// GetGroupMembers(w http.ResponseWriter, r *http.Request)
+	GetGroupMembers(w http.ResponseWriter, r *http.Request)
 
 	MethodNotAllowedHandler() http.Handler
+}
+
+func (h *handlers) GetGroupMembers(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	id := mux.Vars(r)["id"]
+	amount := r.URL.Query().Get("amount")
+
+	// if amount is not passed or invalid, n will be 0
+	n, _ := strconv.Atoi(amount)
+
+	req := GetGroupMembersRequest{
+		Amount: n,
+		Id:     id,
+	}
+	members, err := h.service.GetGroupMembers(req)
+	if err != nil {
+		h.logger.Error("handlers.go", "JoinGroup", err.Error())
+		statusCode, resp := errors.CreateResponse(err)
+		w.WriteHeader(statusCode)
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(members)
 }
 
 func (h *handlers) JoinGroup(w http.ResponseWriter, r *http.Request) {

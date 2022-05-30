@@ -18,7 +18,7 @@ func NewRouter(handlers Handlers, logger log.Logger) *mux.Router {
 	router.Path("/{id}/avatar").Methods("PATCH").HandlerFunc(handlers.UpdateGroupAvatar)
 	router.Path("/{id}/generateCode").Methods("POST").HandlerFunc(handlers.GenerateAccessCode)
 	router.Path("/join").Methods("POST").HandlerFunc(handlers.JoinGroup)
-	// router.Path("/{id}/users").Methods("GET").HandlerFunc(handlers.GetGroupMembers)
+	router.Path("/{id}/users").Methods("GET").HandlerFunc(handlers.GetGroupMembers)
 
 	router.Use(JwtMiddleware)
 

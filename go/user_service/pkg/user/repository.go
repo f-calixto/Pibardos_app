@@ -46,7 +46,7 @@ func (r *repo) GetUserGroups(id string) ([]Group, error) {
 
 	rows, err := r.db.Query(getUserGroupsQuery, id)
 	if err != nil {
-		return []Group{}, err
+		return []Group{}, errors.NewNotFound()
 	}
 	defer rows.Close()
 
@@ -54,7 +54,7 @@ func (r *repo) GetUserGroups(id string) ([]Group, error) {
 		group := Group{}
 		err := rows.Scan(&group.Id, &group.Name, &group.Size, &group.Admin_id, &group.Country, &group.Avatar, &group.Created_at, &group.Description)
 		if err != nil {
-			return []Group{}, err
+			return []Group{}, errors.NewNotFound()
 		}
 		groups = append(groups, group)
 	}

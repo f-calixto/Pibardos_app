@@ -24,6 +24,7 @@ var (
 	checkGroupAdminQuery    = `SELECT admin_id FROM groups WHERE id = $1`
 	validateAccessCodeQuery = `SELECT id, access_code_expiration_time FROM groups WHERE access_code = $1`
 	increaseGroupSize       = `UPDATE groups SET size = size + 1 WHERE id = $1`
+	getGroupMembersQuery    = `SELECT users.id, username, email, created_at, country, birthdate, status, avatar FROM users_groups INNER JOIN users ON users.id = users_groups.user_id WHERE users_groups.group_id = $1`
 )
 
 type repo struct {
@@ -38,6 +39,7 @@ type Repository interface {
 	UpdateAvatar(req UpdateAvatarRequest) (Group, error)
 	StoreAccessCode(req AccessCode) (AccessCode, error)
 	JoinGroup(req AccessCode) (Group, error)
+	GetGroupMembers(req GetGroupMembersRequest) ([]User, error)
 }
 
 func NewRepository(db *sql.DB, logger log.Logger) Repository {
@@ -45,6 +47,32 @@ func NewRepository(db *sql.DB, logger log.Logger) Repository {
 		db:     db,
 		logger: logger,
 	}
+}
+
+func (r *repo) GetGroupMembers(req GetGroupMembersRequest) ([]User, error) {
+	i := 1
+	members := []User{}
+
+	rows, err := r.db.Query(getGroupMembersQuery, req.Id)
+	if err != nil {
+		return []User{}, errors.NewNotFound()
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		user := User{}
+		err := rows.Scan(&user.Id, &user.Username, &user.Email, &user.Created_at, &user.Country, &user.Birthdate, &user.Status, &user.Avatar)
+		if err != nil {
+			return []User{}, errors.NewNotFound()
+		}
+		members = append(members, user)
+		if i == req.Amount {
+			break
+		}
+		i++
+	}
+	r.logger.Info("repository.go", "GetGroupMembers", "group members retrieved successfully")
+	return members, nil
 }
 
 func (r *repo) JoinGroup(req AccessCode) (Group, error) {
