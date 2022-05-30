@@ -43,13 +43,14 @@ type User struct {
 }
 
 type Group struct {
-	Id         string `json:"id"`
-	Name       string `json:"name"`
-	Size       int64  `json:"size"`
-	Admin_id   string `json:"admin_id"`
-	Country    string `json:"country"`
-	Avatar     string `json:"avatar"`
-	Created_at string `json:"created_at"`
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Size        int64  `json:"size"`
+	Admin_id    string `json:"admin_id"`
+	Country     string `json:"country"`
+	Avatar      string `json:"avatar"`
+	Created_at  string `json:"created_at"`
+	Description string `json:"description"`
 }
 
 type FileRequest struct {
@@ -63,5 +64,7 @@ type File struct {
 	MimeType string
 }
 
+// dummy struct to avoid passing string as key in the http request context
+// used in middleware.go/handlers.go
 type UserIdKey struct {
 }

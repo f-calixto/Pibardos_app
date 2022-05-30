@@ -5,61 +5,68 @@ package group
 import (
 	// std lib
 	"mime/multipart"
-
-	// third party
-	"github.com/dgrijalva/jwt-go"
 )
 
-// response body placeholder for successful responses
-type HttpSuccessResponseBody struct {
-	StatusCode int64         `json:"statusCode"`
-	Data       []interface{} `json:"data"`
-}
-
 // dummy struct to avoid passing string as key in the http request context
-// used in middleware.go
+// used in middleware.go/handlers.go
 type UserIdKey struct {
 }
 
-// used to parse jwt payload
-// used in middleware.go
-type Claims struct {
-	userId string
-	jwt.StandardClaims
-}
-
 type Group struct {
-	Id                     string
-	Name                   string
-	Size                   int64
-	Admin_id               string
-	Country                string
-	Access_code            string
-	Access_code_issue_time int64
-	Avatar_route           string
-	Created_at             string
+	Id                          string `json:"id"`
+	Name                        string `json:"name"`
+	Size                        int64  `json:"size"`
+	Country                     string `json:"country"`
+	Admin_id                    string `json:"admin_id"`
+	Access_code                 string `json:"access_code,omitempty"`
+	Access_code_expiration_time int64  `json:",omitempty"`
+	Avatar                      string `json:"avatar"`
+	Created_at                  string `json:"created_at"`
+	Description                 string `json:"description"`
 }
 
 type CreateGroupRequest struct {
-	name     string
-	admin_id string
-	country  string
-	file     multipart.File
+	Name     string
+	Admin_id string
+	Country  string
+	File     multipart.File
 }
 
-type CreateGroupResponse struct {
-	Id           string `json:"id"`
-	Name         string `json:"name"`
-	Size         int64  `json:"size"`
-	Admin_id     string `json:"admin_id"`
-	Country      string `json:"country"`
-	Access_code  string `json:"access_code"`
-	Avatar_route string `json:"avatar"`
-	Created_at   string `json:"created_at"`
+type UpdateGroupRequest struct {
+	Id          *string `json:"id,omitempty"`
+	Name        *string `json:"name,omitempty"`
+	Country     *string `json:"country,omitempty"`
+	Description *string `json:"description,omitempty"`
+	Admin_id    *string `json:"admin_id,omitempty"`
+}
+
+type File struct {
+	Name     string
+	Data     []byte
+	MimeType string
+}
+
+type FileRequest struct {
+	Id   string
+	File multipart.File
+}
+
+type UpdateAvatarRequest struct {
+	Id     string
+	Avatar string
+}
+
+type AccessCodeRequest struct {
+	GroupId string
+	UserId  string
+}
+
+type AccessCode struct {
+	GroupId    string `json:",omitempty"`
+	UserId     string `json:",omitempty"`
+	AccessCode string `json:"access_code"`
+	Expiration int64  `json:",omitempty"`
 }
 
 type JoinGroupRequest struct {
-}
-
-type JoinGroupResponse struct {
 }

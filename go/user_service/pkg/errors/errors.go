@@ -50,7 +50,7 @@ func CreateResponse(e error) (int, Response) {
 		err.Field = ""
 		err.UserMessage = e.Error()
 		err.InternalMessage = e.Error()
-		resp.ErrorName = "internal error"
+		resp.ErrorName = "rabbitmq internal error"
 		resp.Errors = append(resp.Errors, err)
 	case *InvalidUpdate:
 		statusCode = 400

@@ -37,7 +37,7 @@ var (
 	getUserQuery       = `SELECT id, username, email, created_at, country, birthdate, status, avatar FROM users WHERE id = $1`
 	updateAvatarQuery  = `UPDATE users SET avatar = $1 WHERE id = $2`
 	baseUpdateQuery    = `UPDATE users SET `
-	getUserGroupsQuery = `SELECT groups.id, name, size, admin_id, country, avatar, created_at FROM users_groups INNER JOIN groups ON groups.id = users_groups.group_id WHERE users_groups.user_id = $1`
+	getUserGroupsQuery = `SELECT groups.id, name, size, admin_id, country, avatar, created_at, description FROM users_groups INNER JOIN groups ON groups.id = users_groups.group_id WHERE users_groups.user_id = $1`
 )
 
 // Get all of one user's groups
@@ -52,7 +52,7 @@ func (r *repo) GetUserGroups(id string) ([]Group, error) {
 
 	for rows.Next() {
 		group := Group{}
-		err := rows.Scan(&group.Id, &group.Name, &group.Size, &group.Admin_id, &group.Country, &group.Avatar, &group.Created_at)
+		err := rows.Scan(&group.Id, &group.Name, &group.Size, &group.Admin_id, &group.Country, &group.Avatar, &group.Created_at, &group.Description)
 		if err != nil {
 			return []Group{}, err
 		}
