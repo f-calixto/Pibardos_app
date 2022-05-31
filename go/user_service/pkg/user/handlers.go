@@ -49,6 +49,7 @@ func (h *handlers) GetUserGroups(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(resp)
 		return
 	}
+
 	groups, err := h.service.GetUserGroups(userId)
 	if err != nil {
 		statusCode, resp := errors.CreateResponse(err)
@@ -67,13 +68,13 @@ func (h *handlers) GetUser(w http.ResponseWriter, r *http.Request) {
 	userId := fmt.Sprintf("%v", r.Context().Value(UserIdKey{}))
 
 	// check if id path var is the same as jwt authenticated user id
-	if userId != mux.Vars(r)["id"] {
+	/*if userId != mux.Vars(r)["id"] {
 		h.logger.Error("handlers.go", "GetUser", "malformed id in path param")
 		statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("jwt id and path id do not match"))
 		w.WriteHeader(statusCode)
 		json.NewEncoder(w).Encode(resp)
 		return
-	}
+	}*/
 
 	user, err := h.service.GetUser(userId)
 	if err != nil {
@@ -105,7 +106,7 @@ func (h *handlers) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	req := UpdateUserRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(400)
 		return
 	}
 	upsertReq := UpsertUserRequest{

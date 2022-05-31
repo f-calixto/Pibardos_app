@@ -17,12 +17,14 @@ CREATE TABLE IF NOT EXISTS groups (
     country VARCHAR(2),
     admin_id VARCHAR(255),
     access_code VARCHAR(6),
-    access_code_issue_time INTEGER,
+    access_code_expiration_time INTEGER,
     avatar VARCHAR(255),
-    created_at VARCHAR(255)
+    created_at VARCHAR(255),
+    description VARCHAR(255)
 );
 CREATE TABLE IF NOT EXISTS users_groups (
     user_id VARCHAR(255) REFERENCES users(id),
-    group_id VARCHAR(255) REFERENCES groups(id)
+    group_id VARCHAR(255) REFERENCES groups(id),
+    UNIQUE(user_id, group_id)
 );
 EOSQL

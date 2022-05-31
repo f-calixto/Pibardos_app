@@ -11,11 +11,6 @@ type Logger struct {
 	debug *log.Logger
 }
 
-// type Logger interface {
-// 	Error(method string, message string)
-// 	Info(method string, message string)
-// }
-
 func NewLogger() Logger {
 	return Logger{
 		info:  log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime),
@@ -33,5 +28,5 @@ func (l *Logger) Info(file string, method string, message string) {
 }
 
 func (l *Logger) Debug(message string) {
-	l.info.Println(message)
+	l.debug.Println(message)
 }

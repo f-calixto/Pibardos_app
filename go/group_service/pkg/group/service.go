@@ -2,6 +2,7 @@ package group
 
 import (
 	// std lib
+	"crypto/md5"
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
@@ -12,97 +13,189 @@ import (
 	"time"
 
 	// Internal
+	"github.com/coding-kiko/group_service/pkg/errors"
 	"github.com/coding-kiko/group_service/pkg/log"
 
 	// third party
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
+)
+
+const (
+	defaultGroupAvatar = "default_group_avatar.jpeg"
 )
 
 type service struct {
-	repository Repository
-	logger     log.Logger
+	repository     Repository
+	rabbitProducer RabbitProducer
+	logger         log.Logger
 }
 
 type Service interface {
-	// JoinGroup(req JoinGroupRequest) (JoinGroupResponse, error)
-	CreateGroup(req CreateGroupRequest) (CreateGroupResponse, error)
+	CreateGroup(req CreateGroupRequest) (Group, error)
+	GetGroup(id string) (Group, error)
+	UpdateGroup(req UpdateGroupRequest) (Group, error)
+	UpdateGroupAvatar(req FileRequest) (Group, error)
+	GenerateAccessCode(req AccessCodeRequest) (AccessCode, error)
+	JoinGroup(req AccessCode) (Group, error)
+	GetGroupMembers(req GetGroupMembersRequest) ([]User, error)
 }
 
-func NewService(repository Repository, logger log.Logger) Service {
+func NewService(repository Repository, rabbitProducer RabbitProducer, logger log.Logger) Service {
 	return &service{
-		repository: repository,
-		logger:     logger,
+		repository:     repository,
+		rabbitProducer: rabbitProducer,
+		logger:         logger,
 	}
 }
 
-func (s *service) CreateGroup(req CreateGroupRequest) (CreateGroupResponse, error) {
+func (s *service) GetGroupMembers(req GetGroupMembersRequest) ([]User, error) {
+	members, err := s.repository.GetGroupMembers(req)
+	if err != nil {
+		return []User{}, err
+	}
+	return members, nil
+}
+
+func (s *service) JoinGroup(req AccessCode) (Group, error) {
+	group, err := s.repository.JoinGroup(req)
+	if err != nil {
+		return Group{}, err
+	}
+	return group, nil
+}
+
+func (s *service) GenerateAccessCode(req AccessCodeRequest) (AccessCode, error) {
+	code := AccessCode{
+		AccessCode: NewAccessCode(),
+		GroupId:    req.GroupId,
+		UserId:     req.UserId,
+		Expiration: time.Now().Add(time.Duration(30) * time.Minute).Unix(),
+	}
+
+	code, err := s.repository.StoreAccessCode(code)
+	if err != nil {
+		return AccessCode{}, err
+	}
+	return code, nil
+}
+
+func (s *service) UpdateGroupAvatar(req FileRequest) (Group, error) {
+	file, err := ValidateFile(req.File)
+	if err != nil {
+		return Group{}, err
+	}
+
+	newAvatar := NewAvatar(file, req.Id)
+
+	// send new avatar - via rabbitmq
+	err = s.rabbitProducer.AvatarQueue(newAvatar)
+	if err != nil {
+		s.logger.Error("rabbitmq.go", "AvatarQueue", err.Error())
+		return Group{}, err
+	}
+
+	newAvatarreq := UpdateAvatarRequest{Id: req.Id, Avatar: newAvatar.Name}
+	group, err := s.repository.UpdateAvatar(newAvatarreq)
+	if err != nil {
+		s.logger.Error("repository.go", "InsertUser", err.Error())
+		return Group{}, err
+	}
+	return group, nil
+}
+
+func (s *service) UpdateGroup(req UpdateGroupRequest) (Group, error) {
+	group, err := s.repository.UpdateGroup(req)
+	if err != nil {
+		return Group{}, err
+	}
+	return group, nil
+}
+
+func (s *service) GetGroup(id string) (Group, error) {
+	group, err := s.repository.GetGroup(id)
+	if err != nil {
+		return Group{}, nil
+	}
+	return group, nil
+}
+
+func (s *service) CreateGroup(req CreateGroupRequest) (Group, error) {
+	var newAvatar string
 	var id string = uuid.New().String()
 
-	avatar_route, err := ProcessAndStoreAvatar(req.file, id)
-	if err != nil {
-		// manage error
-		return CreateGroupResponse{}, err
+	if req.File == nil {
+		newAvatar = defaultGroupAvatar
+	} else {
+		file, err := ValidateFile(req.File)
+		if err != nil {
+			return Group{}, err
+		}
+		file = NewAvatar(file, id)
+
+		// send new avatar - via rabbitmq
+		err = s.rabbitProducer.AvatarQueue(file)
+		if err != nil {
+			s.logger.Error("rabbitmq.go", "AvatarQueue", err.Error())
+			return Group{}, err
+		}
+
+		newAvatar = file.Name
 	}
+
 	group := Group{
-		Id:                     id,
-		Name:                   req.name,
-		Size:                   1,
-		Country:                req.country,
-		Admin_id:               req.admin_id,
-		Access_code:            NewAccessCode(),
-		Access_code_issue_time: time.Now().Add(time.Duration(30) * time.Minute).Unix(),
-		Avatar_route:           avatar_route,
-		Created_at:             time.Now().Format("02/01/2006"),
+		Id:                          id,
+		Name:                        req.Name,
+		Size:                        1,
+		Country:                     strings.ToUpper(req.Country),
+		Admin_id:                    req.Admin_id,
+		Access_code:                 NewAccessCode(),
+		Access_code_expiration_time: time.Now().Add(time.Duration(30) * time.Minute).Unix(),
+		Avatar:                      newAvatar,
+		Created_at:                  time.Now().UTC().String(),
+		Description:                 "",
 	}
+
 	resp, err := s.repository.CreateGroup(group)
 	if err != nil {
-		return CreateGroupResponse{}, err
+		s.logger.Error("repository.go", "CreateGroup", err.Error())
+		return Group{}, err
 	}
 	return resp, nil
 }
 
-// func (s *service) JoinGroup(req JoinGroupRequest) (JoinGroupResponse, error) {
-
-// }
-
-// store avatar in a persistent volume mapped directory
-// returns the relative image path
-func ProcessAndStoreAvatar(file multipart.File, id string) (string, error) {
-	var basePath string = "/static/"
-	var defaultAvatarPath = "/static/default_group_avatar.jpg"
-
+// Check if file is valid image and extract image type
+func ValidateFile(file multipart.File) (File, error) {
+	// check if any file was passed
 	if file == nil {
-		return defaultAvatarPath, nil
+		return File{}, errors.NewFileError("invalid file")
 	}
+
 	// check if the file is an image
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
-		// manage error
-		return "", err
+		return File{}, errors.NewFileError("error reading file")
 	}
 	mimeType := http.DetectContentType(data)
-	if mimeType != "image/png" && mimeType != "image/jpg" && mimeType != "image/jpeg" && mimeType != "application/octet-stream" {
-		return "", err
+	if mimeType != "image/jpg" && mimeType != "image/jpeg" {
+		return File{}, errors.NewFileError("file must be jpg or jpeg")
 	}
 
-	ext := strings.Split(mimeType, "/")[1]
-	if ext == "octet-stream" {
-		ext = "heic"
-	}
-	// hash id and store in form hashedId.ext
-	hashedId, err := bcrypt.GenerateFromPassword([]byte(id), bcrypt.DefaultCost)
-	if err != nil {
-		// manage error
-		return "", err
-	}
-	filePath := fmt.Sprintf("%s%s.%s", basePath, string(hashedId), ext)
-	err = ioutil.WriteFile(filePath, data, 0644)
-	if err != nil {
-		// manage error
-		return "", err
-	}
-	return filePath, nil
+	return File{
+		Data:     data,
+		MimeType: mimeType,
+	}, nil
+}
+
+func NewAvatar(file File, id string) File {
+	// parse extension
+	ext := strings.Split(file.MimeType, "/")[1]
+
+	// hash id and generate file name: hashedId.ext
+	hashedId := md5.Sum([]byte(id))
+	name := fmt.Sprintf("%s.%s", fmt.Sprintf("%x", hashedId), ext)
+	file.Name = name
+
+	return file
 }
 
 // Generate an access code that lasts 30 minutes
