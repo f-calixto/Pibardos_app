@@ -214,10 +214,6 @@ func (r *repo) CreateGroup(group Group) (Group, error) {
 	}, nil
 }
 
-// func (r *repo) JoinGroup(req JoinGroupRequest) (JoinGroupResponse, error) {
-
-// }
-
 // creates group update query dynamically depending on the fields to be updated
 func PatchQueryConstructor(req UpdateGroupRequest) (string, []interface{}, error) {
 	i := 1 // increments accordingly eith the number of args

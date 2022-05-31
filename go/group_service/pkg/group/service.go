@@ -190,11 +190,6 @@ func NewAvatar(file File, id string) File {
 	// parse extension
 	ext := strings.Split(file.MimeType, "/")[1]
 
-	/* for now only accpet jpg/jpeg so it is irrelevant
-	if ext == "octet-stream" {
-		ext = "heic"
-	}*/
-
 	// hash id and generate file name: hashedId.ext
 	hashedId := md5.Sum([]byte(id))
 	name := fmt.Sprintf("%s.%s", fmt.Sprintf("%x", hashedId), ext)
