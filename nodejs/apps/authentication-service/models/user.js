@@ -67,7 +67,7 @@ UserSchema.methods.comparePassword = function (string) {
   return passwordMethods.compare(string, hash)
 }
 
-UserSchema.plugin(uniqueValidator)
+UserSchema.plugin(uniqueValidator, { message: '{PATH} already exists' })
 
 // remove password and __v fields from returned json
 // and rename _id field to id
