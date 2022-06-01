@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	// internal
 	"github.com/coding-kiko/group_service/pkg/errors"
@@ -20,9 +19,9 @@ var secretKey = os.Getenv("JWT_SECRET")
 
 // used to parse jwt payload
 type Claims struct {
-	UserId   string `json:"userId"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
+	UserId   string `json:"userId,omitempty"`
+	Username string `json:"username,omitempty"`
+	Email    string `json:"email,omitempty"`
 	jwt.StandardClaims
 }
 
@@ -53,6 +52,12 @@ func JwtMiddleware(next http.Handler) http.Handler {
 			return []byte(secretKey), nil
 		})
 		if err != nil {
+			if strings.Contains(err.Error(), "expired") {
+				statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("token expired"))
+				w.WriteHeader(statusCode)
+				json.NewEncoder(w).Encode(resp)
+				return
+			}
 			statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("error parsing jwt"))
 			w.WriteHeader(statusCode)
 			json.NewEncoder(w).Encode(resp)
@@ -62,13 +67,6 @@ func JwtMiddleware(next http.Handler) http.Handler {
 		claims, ok := tk.Claims.(*Claims)
 		if !ok {
 			statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("error parsing jwt"))
-			w.WriteHeader(statusCode)
-			json.NewEncoder(w).Encode(resp)
-			return
-		}
-		// check expiry date
-		if claims.ExpiresAt < time.Now().UTC().Unix() {
-			statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("token expired"))
 			w.WriteHeader(statusCode)
 			json.NewEncoder(w).Encode(resp)
 			return
