@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	// internal
 	"github.com/coding-kiko/user_service/pkg/errors"
@@ -36,6 +37,7 @@ func JwtMiddleware(next http.Handler) http.Handler {
 			statusCode, resp := errors.CreateResponse(errors.NewJwtBadRequest("malformed header"))
 			w.WriteHeader(statusCode)
 			json.NewEncoder(w).Encode(resp)
+			time.Sleep(1 * time.Millisecond)
 			return
 		}
 		authorization := strings.Split(r.Header["Authorization"][0], " ")
@@ -43,6 +45,7 @@ func JwtMiddleware(next http.Handler) http.Handler {
 			statusCode, resp := errors.CreateResponse(errors.NewJwtBadRequest("malformed header"))
 			w.WriteHeader(statusCode)
 			json.NewEncoder(w).Encode(resp)
+			time.Sleep(1 * time.Millisecond)
 			return
 		}
 
@@ -56,11 +59,13 @@ func JwtMiddleware(next http.Handler) http.Handler {
 				statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("token expired"))
 				w.WriteHeader(statusCode)
 				json.NewEncoder(w).Encode(resp)
+				time.Sleep(1 * time.Millisecond)
 				return
 			}
 			statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("error parsing jwt"))
 			w.WriteHeader(statusCode)
 			json.NewEncoder(w).Encode(resp)
+			time.Sleep(1 * time.Millisecond)
 			return
 		}
 		claims, ok := tk.Claims.(*Claims)
@@ -68,6 +73,7 @@ func JwtMiddleware(next http.Handler) http.Handler {
 			statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("error parsing jwt"))
 			w.WriteHeader(statusCode)
 			json.NewEncoder(w).Encode(resp)
+			time.Sleep(1 * time.Millisecond)
 			return
 		}
 
@@ -76,6 +82,7 @@ func JwtMiddleware(next http.Handler) http.Handler {
 			statusCode, resp := errors.CreateResponse(errors.NewJwtBadRequest("missing user id in jwt"))
 			w.WriteHeader(statusCode)
 			json.NewEncoder(w).Encode(resp)
+			time.Sleep(1 * time.Millisecond)
 			return
 		}
 		ctx = context.WithValue(ctx, UserIdKey{}, claims.UserId)

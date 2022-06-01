@@ -67,7 +67,7 @@ func CreateResponse(e error) (int, Response) {
 		resp.ErrorName = "validation error"
 		resp.Errors = append(resp.Errors, err)
 	case *JwtAuthorization:
-		statusCode = 403
+		statusCode = 401
 		err.Field = ""
 		err.UserMessage = e.Error()
 		err.InternalMessage = e.Error()
