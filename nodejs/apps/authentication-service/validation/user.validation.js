@@ -8,6 +8,12 @@ const createUser = Joi.object({
   country: Joi.string().required()
 })
 
+const authenticateUser = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required()
+})
+
 module.exports = {
-  createUser
+  createUser,
+  authenticateUser
 }
