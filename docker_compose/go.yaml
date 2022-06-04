@@ -79,14 +79,14 @@ services:
   ########################
   calendar_service:
     build: ../go/calendar_service
-    container_name: claendar_service
+    container_name: calendar_service
     restart: always
     ports:
       - 5003:5003
     expose:
       - "5003"
     environment:
-      - POSTGRES_HOST=users_groups_postgres
+      - POSTGRES_HOST=calendar_postgres
       - POSTGRES_DB=pibardos_app
       - POSTGRES_USER=pibardos
       - POSTGRES_PORT=5433
