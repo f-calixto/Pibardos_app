@@ -89,7 +89,7 @@ services:
       - POSTGRES_HOST=calendar_postgres
       - POSTGRES_DB=pibardos_app
       - POSTGRES_USER=pibardos
-      - POSTGRES_PORT=5433
+      - POSTGRES_PORT=5432
       - POSTGRES_PWD=${POSTGRES_PASSWORD_PIBARDOS_APP}
 
       - API_PORT=5003
