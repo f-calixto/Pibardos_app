@@ -164,7 +164,7 @@ func (r *repo) UpdateGroup(req UpdateGroupRequest) (Group, error) {
 		if strings.Contains(err.Error(), "duplicate") {
 			return Group{}, errors.NewInvalidCredentials("group name already in use")
 		}
-		return Group{}, err
+		return Group{}, errors.NewNotFound("group not found")
 	}
 
 	updatedGroup, err := r.GetGroup(*req.Id)
