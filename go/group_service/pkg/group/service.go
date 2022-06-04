@@ -22,6 +22,7 @@ import (
 
 const (
 	defaultGroupAvatar = "default_group_avatar.jpeg"
+	isoFormat          = "2006-01-02T15:04:05.999999999Z"
 )
 
 type service struct {
@@ -151,7 +152,7 @@ func (s *service) CreateGroup(req CreateGroupRequest) (Group, error) {
 		Access_code:                 NewAccessCode(),
 		Access_code_expiration_time: time.Now().Add(time.Duration(30) * time.Minute).Unix(),
 		Avatar:                      newAvatar,
-		Created_at:                  time.Now().UTC().String(),
+		Created_at:                  time.Now().UTC().Format(isoFormat),
 		Description:                 "",
 	}
 

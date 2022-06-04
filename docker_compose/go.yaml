@@ -75,6 +75,35 @@ services:
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
 
   ########################
+  ### calendar_service ###
+  ########################
+  calendar_service:
+    build: ../go/calendar_service
+    container_name: claendar_service
+    restart: always
+    ports:
+      - 5003:5003
+    expose:
+      - "5003"
+    environment:
+      - POSTGRES_HOST=users_groups_postgres
+      - POSTGRES_DB=pibardos_app
+      - POSTGRES_USER=pibardos
+      - POSTGRES_PORT=5433
+      - POSTGRES_PWD=${POSTGRES_PASSWORD_PIBARDOS_APP}
+
+      - API_PORT=5003
+
+      - JWT_SECRET=${JWT_SECRET}
+
+      - VIRTUAL_PORT=5003
+      - VIRTUAL_PATH=/calendar/
+      - VIRTUAL_DEST=/
+      - VIRTUAL_HOST=api.pibardosapp.com
+      - LETSENCRYPT_HOST=api.pibardosapp.com
+      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
+  ########################
   #### avatar_service ####
   ########################
   avatar_service:
