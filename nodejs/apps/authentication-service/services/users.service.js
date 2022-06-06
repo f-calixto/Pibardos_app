@@ -1,5 +1,7 @@
 const ServiceError = require('../utils/ServiceError')
 const { SERVICE_ERRORS } = require('../constants/errors')
+const TokensService = require('./token.service')
+const tokensService = new TokensService()
 
 class UsersService {
   constructor (UserModel) {
@@ -12,7 +14,7 @@ class UsersService {
   * @param {string} user.email - The user's email.
   * @param {string} user.username - The user's username.
   * @param {string} user.password - The user's password.
-  * @param {string} user.birthdate - The user's birthdate.
+  * @param {string} user.birthdate - The user's birthdate .
   * @param {string} user.country - The user's country.
   * @returns {Promise} Promise object represents the registered user.
   */
@@ -35,7 +37,7 @@ class UsersService {
    * @param {Object} credentials - The user's credentials.
    * @param {string} credentials.email - The user's email.
    * @param {string} credentials.password - The user's password.
-   * @returns {Promise} Promise object represents the authenticated user.
+   * @returns {Object} The user's access token.
    */
 
   async authenticate ({ email, password }) {
@@ -49,7 +51,9 @@ class UsersService {
       throw new ServiceError(SERVICE_ERRORS.INVALID_CREDENTIALS, 'email', 'Email or password is invalid')
     }
 
-    return user
+    const accessToken = tokensService.signAccessToken({ userId: user.id, username: user.username, email: user.email })
+
+    return { accessToken }
   }
 }
 

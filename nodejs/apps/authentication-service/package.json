@@ -11,5 +11,6 @@
   "author": "Agustin Lanusse (@alanusse)",
   "license": "MIT",
   "dependencies": {
+    "jsonwebtoken": "8.5.1"
   }
 }
