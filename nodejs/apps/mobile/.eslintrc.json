@@ -1,0 +1,32 @@
+{
+	"env": {
+		"es2021": true,
+		"react-native/react-native": true
+	},
+	"extends": [
+		"plugin:react/recommended",
+		"standard"
+	],
+	"settings": {
+		"react": {
+			"version": "detect"
+		}
+	},
+	"parserOptions": {
+		"ecmaFeatures": {
+			"jsx": true
+		},
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"plugins": [
+		"react",
+		"react-native"
+	],
+	"rules": {
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+		"quotes": ["error", "single"],
+		"jsx-quotes": ["error", "prefer-single"]
+  }
+}
