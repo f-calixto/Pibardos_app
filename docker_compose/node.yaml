@@ -1,19 +1,45 @@
 version: '3'
 
 services:
- node-service:
-    build: ../node
-    container_name: node-service
+##########################
+# Authentication service #
+##########################
+  authentication-service:
+    container_name: authentication-service
+    build:
+      context: ../nodejs
+      dockerfile: Dockerfile.prod
+      args:
+        - BUILD_CONTEXT=authentication-service
     restart: always
     expose:
       - "3000"
     environment:
+      - PORT=3000
+      - MONGODB_URI_CONNECTION=mongodb://authentication-service-database:27017/auth-service
+      - BCRYPT_SALT_ROUNDS=12
+      - ACCESS_TOKEN_SECRET=${JWT_SECRET}
+      - ACCESS_TOKEN_EXP_TIME=7d
+    links:
+      - authentication-service-database
+    environment:
       - VIRTUAL_PORT=3000
-      - VIRTUAL_PATH=/node_api/
+      - VIRTUAL_PATH=/auth/
       - VIRTUAL_DEST=/
       - VIRTUAL_HOST=api.pibardosapp.com
       - LETSENCRYPT_HOST=api.pibardosapp.com
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
+#####################################
+# Authentication service's database #
+#####################################
+  authentication-service-database:
+    container_name: authentication-service-database
+    build: mongo:latest
+    expose:
+      - 27017
+    volumes:
+      - /data/mongo_data/authentication-service:/data/db
 
 networks: 
   default: 
