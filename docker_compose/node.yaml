@@ -34,8 +34,8 @@ services:
 # Authentication service's database #
 #####################################
   authentication-service-database:
+    image: mongo:latest
     container_name: authentication-service-database
-    build: mongo:latest
     expose:
       - 27017
     volumes:
