@@ -1,0 +1,12 @@
+FROM node:lts-alpine as build
+ARG BUILD_CONTEXT
+
+ENV BUILD_CONTEXT ${BUILD_CONTEXT}
+
+WORKDIR /usr/src
+COPY package*.json ./
+COPY ./apps/${BUILD_CONTEXT}/package*.json ./apps/${BUILD_CONTEXT}/
+RUN npm install
+COPY ./apps/${BUILD_CONTEXT} ./apps/${BUILD_CONTEXT}
+
+CMD npm run start:dev:${BUILD_CONTEXT}
