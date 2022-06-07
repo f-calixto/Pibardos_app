@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	// Internal
 	"github.com/coding-kiko/user_service/pkg/errors"
@@ -47,6 +48,7 @@ func (h *handlers) GetUserGroups(w http.ResponseWriter, r *http.Request) {
 		statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("jwt id and path id do not match"))
 		w.WriteHeader(statusCode)
 		json.NewEncoder(w).Encode(resp)
+		time.Sleep(1 * time.Millisecond)
 		return
 	}
 
@@ -55,6 +57,7 @@ func (h *handlers) GetUserGroups(w http.ResponseWriter, r *http.Request) {
 		statusCode, resp := errors.CreateResponse(err)
 		w.WriteHeader(statusCode)
 		json.NewEncoder(w).Encode(resp)
+		time.Sleep(1 * time.Millisecond)
 		return
 	}
 	w.WriteHeader(200)
@@ -81,6 +84,7 @@ func (h *handlers) GetUser(w http.ResponseWriter, r *http.Request) {
 		statusCode, resp := errors.CreateResponse(err)
 		w.WriteHeader(statusCode)
 		json.NewEncoder(w).Encode(resp)
+		time.Sleep(1 * time.Millisecond)
 		return
 	}
 
@@ -100,6 +104,7 @@ func (h *handlers) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("jwt id and path id do not match"))
 		w.WriteHeader(statusCode)
 		json.NewEncoder(w).Encode(resp)
+		time.Sleep(1 * time.Millisecond)
 		return
 	}
 
@@ -107,6 +112,7 @@ func (h *handlers) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(400)
+		time.Sleep(1 * time.Millisecond)
 		return
 	}
 	upsertReq := UpsertUserRequest{
@@ -120,6 +126,7 @@ func (h *handlers) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		statusCode, resp := errors.CreateResponse(err)
 		w.WriteHeader(statusCode)
 		json.NewEncoder(w).Encode(resp)
+		time.Sleep(1 * time.Millisecond)
 		return
 	}
 
@@ -139,6 +146,7 @@ func (h *handlers) UpdateUserAvatar(w http.ResponseWriter, r *http.Request) {
 		statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("jwt id and path id do not match"))
 		w.WriteHeader(statusCode)
 		json.NewEncoder(w).Encode(resp)
+		time.Sleep(1 * time.Millisecond)
 		return
 	}
 
@@ -154,6 +162,7 @@ func (h *handlers) UpdateUserAvatar(w http.ResponseWriter, r *http.Request) {
 		statusCode, resp := errors.CreateResponse(err)
 		w.WriteHeader(statusCode)
 		json.NewEncoder(w).Encode(resp)
+		time.Sleep(1 * time.Millisecond)
 		return
 	}
 
@@ -168,5 +177,6 @@ func (h *handlers) MethodNotAllowedHandler() http.Handler {
 		statusCode, resp := errors.CreateResponse(errors.NewMethodNotAllowed("method not allowed"))
 		w.WriteHeader(statusCode)
 		json.NewEncoder(w).Encode(resp)
+		time.Sleep(1 * time.Millisecond)
 	})
 }
