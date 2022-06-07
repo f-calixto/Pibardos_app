@@ -1,4 +1,4 @@
-FROM arm32v7/golang:alpine3.14
+FROM arm32v7/golang:alpine3.14  
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ COPY go.sum .
 
 RUN go mod download
 
-EXPOSE 5000
+EXPOSE 5002
 
 COPY . .
 

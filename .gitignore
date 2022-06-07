@@ -2,3 +2,6 @@ node_modules
 build
 dist
 .env
+docker-compose-test.yaml
+go/*/makefile
+go/makefile
