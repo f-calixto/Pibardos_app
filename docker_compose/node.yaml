@@ -34,7 +34,7 @@ services:
 # Authentication service's database #
 #####################################
   authentication-service-database:
-    image: mongo:latest
+    image: arm64v8/mongo
     container_name: authentication-service-database
     expose:
       - 27017
