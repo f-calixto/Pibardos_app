@@ -2,6 +2,43 @@ version: '3'
 
 services:
   ########################
+  ##### user_service #####
+  ########################
+  user_service:
+    build: ../go/user_service
+    container_name: user_service
+    restart: always
+    ports:
+      - 5000:5000
+    expose:
+      - "5000"
+    environment:
+      - RABBITMQ_USER=pibardos
+      - RABBITMQ_PWD=${RABBITMQ_PASSWORD_PIBARDOS_APP}
+      - RABBITMQ_HOST=rabbitmq_pibardos_app
+      - RABBITMQ_PORT=5672
+
+      - AVATAR_QUEUE=${AVATAR_QUEUE_PIBARDOS_APP}
+      - USERS_QUEUE=${USERS_QUEUE_PIBARDOS_APP}
+
+      - POSTGRES_HOST=users_groups_postgres
+      - POSTGRES_DB=pibardos_app
+      - POSTGRES_USER=pibardos
+      - POSTGRES_PORT=5432
+      - POSTGRES_PWD=${POSTGRES_PASSWORD_PIBARDOS_APP}
+
+      - API_PORT=5000
+
+      - JWT_SECRET=${JWT_SECRET}
+
+      - VIRTUAL_PORT=5000
+      - VIRTUAL_PATH=/users/
+      - VIRTUAL_DEST=/
+      - VIRTUAL_HOST=api.pibardosapp.com
+      - LETSENCRYPT_HOST=api.pibardosapp.com
+      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
+  ########################
   #### group_service #####
   ########################
   group_service:
@@ -9,21 +46,125 @@ services:
     container_name: group_service
     restart: always
     ports:
-      - 5000:5000
+      - 5002:5002
     expose:
-      - "5000"
+      - "5002"
     environment:
-      - API_PORT=5000
+      - RABBITMQ_USER=pibardos
+      - RABBITMQ_PWD=${RABBITMQ_PASSWORD_PIBARDOS_APP}
+      - RABBITMQ_HOST=rabbitmq_pibardos_app
+      - RABBITMQ_PORT=5672
+
+      - AVATAR_QUEUE=${AVATAR_QUEUE_PIBARDOS_APP}
+
+      - POSTGRES_HOST=users_groups_postgres
       - POSTGRES_DB=pibardos_app
-      - POSTGRES_CONTAINER=postgres
+      - POSTGRES_USER=pibardos
       - POSTGRES_PORT=5432
       - POSTGRES_PWD=${POSTGRES_PASSWORD_PIBARDOS_APP}
-      - VIRTUAL_PORT=5000
+
+      - API_PORT=5002
+
+      - JWT_SECRET=${JWT_SECRET}
+
+      - VIRTUAL_PORT=5002
       - VIRTUAL_PATH=/groups/
       - VIRTUAL_DEST=/
       - VIRTUAL_HOST=api.pibardosapp.com
       - LETSENCRYPT_HOST=api.pibardosapp.com
       - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
+  ########################
+  ### calendar_service ###
+  ########################
+  calendar_service:
+    build: ../go/calendar_service
+    container_name: calendar_service
+    restart: always
+    ports:
+      - 5003:5003
+    expose:
+      - "5003"
+    environment:
+      - POSTGRES_HOST=calendar_postgres
+      - POSTGRES_DB=pibardos_app
+      - POSTGRES_USER=pibardos
+      - POSTGRES_PORT=5432
+      - POSTGRES_PWD=${POSTGRES_PASSWORD_PIBARDOS_APP}
+
+      - API_PORT=5003
+
+      - JWT_SECRET=${JWT_SECRET}
+
+      - VIRTUAL_PORT=5003
+      - VIRTUAL_PATH=/calendar/
+      - VIRTUAL_DEST=/
+      - VIRTUAL_HOST=api.pibardosapp.com
+      - LETSENCRYPT_HOST=api.pibardosapp.com
+      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
+  ########################
+  ##### debts_service ####
+  ########################
+  debts_service:
+    build: ../go/debts_service
+    container_name: debts_service
+    restart: always
+    ports:
+      - 5004:5004
+    expose:
+      - "5004"
+    environment:
+      - POSTGRES_HOST=debts_postgres
+      - POSTGRES_DB=pibardos_app
+      - POSTGRES_USER=pibardos
+      - POSTGRES_PORT=5432
+      - POSTGRES_PWD=${POSTGRES_PASSWORD_PIBARDOS_APP}
+
+      - API_PORT=5004
+
+      - JWT_SECRET=${JWT_SECRET}
+
+      - VIRTUAL_PORT=5004
+      - VIRTUAL_PATH=/debts/
+      - VIRTUAL_DEST=/
+      - VIRTUAL_HOST=api.pibardosapp.com
+      - LETSENCRYPT_HOST=api.pibardosapp.com
+      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
+  ########################
+  #### avatar_service ####
+  ########################
+  avatar_service:
+    build: ../go/avatar_service
+    container_name: avatar_service
+    restart: always
+    ports:
+      - 5001:5001
+    expose:
+      - "5001"
+    environment:
+      - API_PORT=5001
+
+      - RABBITMQ_USER=pibardos
+      - RABBITMQ_PWD=${RABBITMQ_PASSWORD_PIBARDOS_APP}
+      - RABBITMQ_HOST=rabbitmq_pibardos_app
+      - RABBITMQ_PORT=5672
+
+      - AVATAR_QUEUE=${AVATAR_QUEUE_PIBARDOS_APP}
+
+      - STATIC_PATH=${STATIC_PIBARDOS_APP}
+
+      - VIRTUAL_PORT=5001
+      - VIRTUAL_PATH=/
+      - VIRTUAL_DEST=/
+      - VIRTUAL_HOST=static.pibardosapp.com
+      - LETSENCRYPT_HOST=static.pibardosapp.com
+      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+    volumes:
+      - /data/static/80:/data/static/80
+      - /data/static/300:/data/static/300
+      - /data/static/800:/data/static/800
 
 networks: 
   default: 
