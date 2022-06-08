@@ -1,21 +1,37 @@
-import { Box, Text, Link } from 'native-base'
+import { Button, Flex, Text } from 'native-base'
+import theme from '../../theme'
+import { Image } from 'react-native'
 
 const AuthScreen = () => {
   return (
-    <Box>
-      <Text mx='16'>
-        NativeBase is a component library that enables devs to build universal
-        design systems. It is built on top of React Native, allowing you to
-        develop apps for Android, iOS and the Web.{' '}
-        <Link href='https://nativebase.io' isExternal _text={{
-          color: 'blue.400'
-        }} mt={-0.5} _web={{
-          mb: -2
-        }}>
-          Read More
-        </Link>
-      </Text>
-    </Box>
+
+    <Flex flex='1' >
+
+      <Flex direction='row' justify='center' align='center' pt='50%'>
+        <Image
+          source={require('../assets/logos/favicon.png') }
+          width='20%'
+          height= '20%'
+          alt='logo'>
+
+        </Image>
+
+        <Text pl='2' fontSize='40' fontWeight='bold'>Pibardos App</Text>
+      </Flex>
+      <Flex flex='1' justify='center' align='center' mt='-30%'>
+
+      <Button width='90%' bg={theme.colors.blue} height='8%' onPress={() => console.log('hello world')}>
+        Iniciar Sesion
+      </Button>
+      <Button mt='3%' bg={theme.colors.green} width='90%' height='8%' onPress={() => console.log('hello world')}>
+        Crear una nueva cuenta
+      </Button>
+      </Flex>
+      <Flex align='center' pb='5%'>
+      <Text>Hecho con 🖤 por Frank, Mazen e Ivanchu </Text>
+      </Flex>
+    </Flex>
+
   )
 }
 
