@@ -5,13 +5,13 @@ import React, { useState } from 'react'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 const LoginScreen = () => {
-  const [showPswd, setShowPswd] = React.useState(false)
-  const [email, setEmail] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const [verifyPassword, setVerifyPassword] = React.useState('')
-  const [userName, setUserName] = React.useState('')
-  const [birthday, setBirthday] = React.useState('')
-  const [country, setCountry] = React.useState('')
+  const [showPswd, setShowPswd] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [verifyPassword, setVerifyPassword] = useState('')
+  const [userName, setUserName] = useState('')
+  const [birthday, setBirthday] = useState('')
+  const [country, setCountry] = useState('')
   return (
 
     <Flex flex='1'>
