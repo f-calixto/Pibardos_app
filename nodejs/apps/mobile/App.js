@@ -3,12 +3,13 @@ import { NativeBaseProvider } from 'native-base'
 // import AuthScreen from './src/screens/AuthScreen'
 // import LoginScreen from './src/screens/LoginScreen'
 // import RegisterScreen from './src/screens/RegisterScreen'
-import HeaderBar from './src/HeaderBar'
+// import HeaderBar from './src/HeaderBar'
+import GroupsScreen from './src/screens/GroupsScreen'
 
 export default function App () {
   return (
     <NativeBaseProvider>
-      <HeaderBar />
+      <GroupsScreen />
     </NativeBaseProvider>
   )
 }
