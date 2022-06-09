@@ -2,7 +2,7 @@
 
 # Authentication service
 
-This service will handle user authentication and email & password replacements.
+This service will handle user authentication and email & password update.
 
 ## Tech stack
 We are using the following libraries:
