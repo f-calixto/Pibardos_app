@@ -13,25 +13,39 @@ const LoginScreen = () => {
     <Flex flex='1'>
       <Flex justify='center' align='center' mt='50%'>
         <Image
-          source={require('../assets/logos/favicon.png') }
+          source={require('../assets/logos/favicon.png')}
           width='50%'
-          height= '50%'
+          height='50%'
           alt='logo'
         />
-        <Text mt='3' fontSize='35' fontWeight='bold'>Iniciar Sesion</Text>
+        <Text mt='3' fontSize='35' fontWeight='bold'>
+          Iniciar Sesion
+        </Text>
       </Flex>
-      <Flex mt='10%' justify='space-between' align='center' >
-        <Input width='90%' placeholder='E-mail o nombre de usuario' onChangeText={email => setEmail(email)} />
+      <Flex mt='10%' justify='space-between' align='center'>
+        <Input
+          width='90%'
+          placeholder='E-mail o nombre de usuario'
+          onChangeText={(email) => setEmail(email)}
+        />
         <Input
           width='90%'
           placeholder='Contraseña'
-          onChangeText={pswd => setPassword(pswd)}
+          onChangeText={(pswd) => setPassword(pswd)}
           type={showPswd ? 'text' : 'password'}
-          InputRightElement={<Icon as={<MaterialIcons name={showPswd ? 'visibility' : 'visibility-off'} />}
-          size={5}
-          mr='2'
-          color='muted.400'
-          onPress={() => setShowPswd(!showPswd)} />}
+          InputRightElement={
+            <Icon
+              as={
+                <MaterialIcons
+                  name={showPswd ? 'visibility' : 'visibility-off'}
+                />
+              }
+              size={5}
+              mr='2'
+              color='muted.400'
+              onPress={() => setShowPswd(!showPswd)}
+            />
+          }
         />
         <Button
           width='70%'
@@ -42,10 +56,10 @@ const LoginScreen = () => {
           Iniciar Sesion
         </Button>
         <Pressable onPress={() => console.log('Olvide contrasena')}>
-            <Text>Olvide mi contraseña</Text>
+          <Text>Olvide mi contraseña</Text>
         </Pressable>
         <Pressable onPress={() => console.log('No estoy registrado')}>
-            <Text>No estoy registrado</Text>
+          <Text>No estoy registrado</Text>
         </Pressable>
       </Flex>
     </Flex>
