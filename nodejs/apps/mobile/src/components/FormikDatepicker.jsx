@@ -8,7 +8,6 @@ import formatDate from '../utils/formatDate'
 
 const FormikDatepicker = ({ name, placeholder, ...props }) => {
   const [field, meta, helpers] = useField(name)
-  const [show, setShow] = useState(false)
   const showError = meta.touched && meta.error
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false)
@@ -22,20 +21,20 @@ const FormikDatepicker = ({ name, placeholder, ...props }) => {
   }
 
   const handleConfirm = (date) => {
-    console.warn('A date has been picked: ', date)
+    helpers.setValue(date)
     hideDatePicker()
   }
 
   return (
-    <Box mb={theme.fontSizes.medium}>
-      <FormControl isInvalid={showError}>
-        {field.value.length > 0 &&
-          <FormControl.Label>
-            {placeholder}
-          </FormControl.Label>
-        }
+    <FormControl mb={theme.fontSizes.medium} isInvalid={showError}>
+      {field.value !== undefined &&
+        <FormControl.Label>
+          {placeholder}
+        </FormControl.Label>
+      }
         <Input
-          isReadOnly
+          showSoftInputOnFocus={false}
+          onPressIn={showDatePicker}
           fontSize={theme.fontSizes.small}
           h={12}
           placeholder={placeholder}
@@ -46,23 +45,21 @@ const FormikDatepicker = ({ name, placeholder, ...props }) => {
               as={<MaterialIcons name='event' />}
               mr={theme.fontSizes.small}
               size={theme.fontSizes.large}
-              onPress={() => setShow(true)}
             />
           }
           {...props}
         />
-        <Button title='Show Date Picker' onPress={showDatePicker} />
-        <DateTimePickerModal
-          isVisible={isDatePickerVisible}
-          mode='date'
-          onConfirm={handleConfirm}
-          onCancel={hideDatePicker}
-        />
-        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size='xs' />}>
-          <Text fontSize={theme.fontSizes.small}>{meta.error}</Text>
-        </FormControl.ErrorMessage>
-      </FormControl>
-    </Box>
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode='date'
+        date={field.value}
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
+      <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size='xs' />}>
+        <Text fontSize={theme.fontSizes.small}>{meta.error}</Text>
+      </FormControl.ErrorMessage>
+    </FormControl>
   )
 }
 
