@@ -1,8 +1,13 @@
+/**
+ * color palette: https://coolors.co/palette/264653-2a9d8f-e9c46a-f4a261-e76f51
+ */
+
 export default {
   colors: {
     blue: '#444cb4',
     green: '#8fd14f',
-    primary: '#0366d6',
+    primary: '#264653',
+    secondary: '#fdfd96',
     white: '#fff',
     grey: '#666',
     red: '#d73a4a',
