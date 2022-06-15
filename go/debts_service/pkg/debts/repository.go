@@ -26,10 +26,9 @@ var (
 							FROM debt_requests WHERE group_id = $1 AND lender_id = $2`
 	getReceivedRequestsQuery = `SELECT id, group_id, lender_id, borrower_id, date, description, amount, status
 								FROM debt_requests WHERE group_id = $1 AND borrower_id = $2`
-	getGroupDebtsQuery = `SELECT borrower_id, lender_id, amount FROM debts WHERE group_id = $1 AND amount > 0
-						  ORDER BY borrower_id`
-	cancelDebtQuery = `UPDATE debts SET amount = amount - $1 WHERE group_id = $2 AND lender_id = $3 AND
-					   borrower_id = $4`
+	getGroupDebtsQuery = `SELECT borrower_id, lender_id, amount FROM debts WHERE group_id = $1 AND amount > 0`
+	cancelDebtQuery    = `UPDATE debts SET amount = GREATEST(amount - $1, 0) WHERE group_id = $2 AND 
+						  lender_id = $3 AND borrower_id = $4`
 	getUpdatedDebtsQuery = `SELECT lender_id, amount FROM debts WHERE group_id = $1 
 							AND amount > 0 AND borrower_id = $2`
 )
@@ -58,6 +57,7 @@ type Repository interface {
 	CancelDebt(req CancelDebtRequest) (Borrower, error)
 }
 
+// cancel debt tottally or partially, if amount is bigger than debt it becomes 0
 func (r *repo) CancelDebt(req CancelDebtRequest) (Borrower, error) {
 	_, err := r.db.Exec(cancelDebtQuery, req.Amount, req.GroupId, req.LenderId, req.BorrowerId)
 	if err != nil {
