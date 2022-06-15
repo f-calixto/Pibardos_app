@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	createGroupQuery = `INSERT INTO groups(id, name, size, country, admin_id, access_code, access_code_expiration_time, avatar, created_at, description) 
-						Values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`
+	createGroupQuery = `INSERT INTO groups(id, name, size, country, admin_id, access_code, access_code_expiration_time, avatar, created_at, description)
+							   Values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`
 
 	joinUsersGroupsQuery    = `INSERT INTO users_groups(user_id, group_id) Values($1, $2)`
 	getGroupQuery           = `SELECT id, name, size, country, admin_id, avatar, created_at, description FROM groups WHERE id = $1`
