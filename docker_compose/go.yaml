@@ -106,31 +106,31 @@ services:
   ########################
   ##### debts_service ####
   ########################
-  # debts_service:
-  #   build: ../go/debts_service
-  #   container_name: debts_service
-  #   restart: always
-  #   ports:
-  #     - 5004:5004
-  #   expose:
-  #     - "5004"
-  #   environment:
-  #     - POSTGRES_HOST=debts_postgres
-  #     - POSTGRES_DB=pibardos_app
-  #     - POSTGRES_USER=pibardos
-  #     - POSTGRES_PORT=5432
-  #     - POSTGRES_PWD=${POSTGRES_PASSWORD_PIBARDOS_APP}
+  debts_service:
+    build: ../go/debts_service
+    container_name: debts_service
+    restart: always
+    ports:
+      - 5004:5004
+    expose:
+      - "5004"
+    environment:
+      - POSTGRES_HOST=debts_postgres
+      - POSTGRES_DB=pibardos_app
+      - POSTGRES_USER=pibardos
+      - POSTGRES_PORT=5432
+      - POSTGRES_PWD=${POSTGRES_PASSWORD_PIBARDOS_APP}
 
-  #     - API_PORT=5004
+      - API_PORT=5004
 
-  #     - JWT_SECRET=${JWT_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
 
-  #     - VIRTUAL_PORT=5004
-  #     - VIRTUAL_PATH=/debts/
-  #     - VIRTUAL_DEST=/
-  #     - VIRTUAL_HOST=api.pibardosapp.com
-  #     - LETSENCRYPT_HOST=api.pibardosapp.com
-  #     - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+      - VIRTUAL_PORT=5004
+      - VIRTUAL_PATH=/debts/
+      - VIRTUAL_DEST=/
+      - VIRTUAL_HOST=api.pibardosapp.com
+      - LETSENCRYPT_HOST=api.pibardosapp.com
+      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
 
   ########################
   #### avatar_service ####
