@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, FormControl, Icon, Input, Text, WarningOutlineIcon } from 'native-base'
+import { FormControl, Icon, Input, Text, WarningOutlineIcon } from 'native-base'
 import { useField } from 'formik'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
