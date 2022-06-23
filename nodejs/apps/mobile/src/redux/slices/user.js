@@ -16,7 +16,10 @@ export const registerUser = createAsyncThunk('user/registerUser',
         password
       }))
     } catch (error) {
-      return rejectWithValue(error.response.data.errors)
+      return rejectWithValue({
+        statusCode: error.response.status,
+        errors: error.response.data.errors
+      })
     }
   })
 
@@ -29,7 +32,10 @@ export const loginUser = createAsyncThunk('user/loginUser',
       const response = await userService.loginUser({ email, password })
       return response.data
     } catch (error) {
-      return rejectWithValue(error.response.data.errors)
+      return rejectWithValue({
+        statusCode: error.response.status,
+        errors: error.response.data.errors
+      })
     }
   })
 
@@ -37,6 +43,7 @@ const userSlice = createSlice({
   name: 'user',
   initialState: {
     status: 'idle',
+    error: null,
     errors: null,
     isLoggedIn: false,
     accessToken: null,
@@ -59,7 +66,12 @@ const userSlice = createSlice({
     },
     [registerUser.rejected]: (state, action) => {
       state.status = 'failed'
-      state.errors = action.payload
+
+      if (action.payload.statusCode !== 400) {
+        state.error = 'An unknown error occured'
+      } else {
+        state.errors = action.payload.errors
+      }
     },
 
     /* loginUser reducers */
@@ -75,7 +87,12 @@ const userSlice = createSlice({
     },
     [loginUser.rejected]: (state, action) => {
       state.status = 'failed'
-      state.errors = action.payload
+
+      if (action.payload.statusCode !== 400) {
+        state.error = 'An unknown error occured'
+      } else {
+        state.errors = action.payload.errors
+      }
     }
   }
 })
