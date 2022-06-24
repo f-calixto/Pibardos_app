@@ -7,18 +7,23 @@ import theme from './theme'
 // import HeaderBar from './src/HeaderBar'
 // import GroupsScreen from './src/screens/GroupsScreen'
 
+import { Provider as ReduxProvider } from 'react-redux'
+import store from './src/redux/store'
+
 export default function App () {
   return (
-    <NativeBaseProvider>
-      <Box flex={1}>
-        <StatusBar
-          barStyle='dark-content'
-          backgroundColor={theme.colors.white} // for android
-        />
+    <ReduxProvider store={store}>
+      <NativeBaseProvider>
+        <Box flex={1}>
+          <StatusBar
+            barStyle='dark-content'
+            backgroundColor={theme.colors.white} // for android
+          />
 
-        <RegisterScreen />
-        {/* <GroupsScreen /> */}
-      </Box>
-    </NativeBaseProvider>
+          <RegisterScreen />
+          {/* <GroupsScreen /> */}
+        </Box>
+      </NativeBaseProvider>
+    </ReduxProvider>
   )
 }
