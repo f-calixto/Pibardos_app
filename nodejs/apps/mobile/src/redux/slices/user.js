@@ -67,10 +67,11 @@ const userSlice = createSlice({
     [registerUser.rejected]: (state, action) => {
       state.status = 'failed'
 
-      if (action.payload.statusCode !== 400) {
-        state.error = 'An unknown error occured'
-      } else {
-        state.errors = action.payload.errors
+      // TODO: refactor this block to avoid repeated code
+      // if server not return an errors array, then set an error message
+      // returned from server or set a generic error message.
+      if (!action.payload.errors || action.payload.errors.length === 0) {
+        state.error = action.payload.error || 'An unknown error occured'
       }
     },
 
@@ -87,11 +88,13 @@ const userSlice = createSlice({
     },
     [loginUser.rejected]: (state, action) => {
       state.status = 'failed'
+      state.errors = action.payload.errors || null
 
-      if (action.payload.statusCode !== 400) {
-        state.error = 'An unknown error occured'
-      } else {
-        state.errors = action.payload.errors
+      // TODO: refactor this block to avoid repeated code
+      // if server not return an errors array, then set an error message
+      // returned from server or set a generic error message.
+      if (!action.payload.errors || action.payload.errors.length === 0) {
+        state.error = action.payload.error || 'An unknown error occured'
       }
     }
   }
