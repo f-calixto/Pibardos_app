@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "*": ["src/*"],
+      "@Components": ["./src/components/*"],
+      "@Containers": ["./src/containers/*"],
+      "@Screens": ["./src/screens/*"],
+      "@ReduxSlices": ["./src/redux/*"],
+      "@Hooks": ["./src/hooks/*"],
+      "@Assets": ["./src/assets/*"],
+      "@Theme": ["./theme.js/*"],
+      "@Utils": ["./src/utils/*"],
+      "@Services": ["./src/services/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}
