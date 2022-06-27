@@ -1,5 +1,5 @@
 import * as yup from 'yup'
-import inputErrorMessages from '../../utils/inputErrorMessages'
+import inputErrorMessages from '@Utils/inputErrorMessages'
 
 const validationSchema = yup.object({
   email: yup
@@ -13,7 +13,7 @@ const validationSchema = yup.object({
 
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref('password'), null], 'Las constraseñas no coinciden'),
+    .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 
   username: yup
     .string()

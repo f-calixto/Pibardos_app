@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react'
 import { Button, Icon, Box } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { countries } from 'countries-list'
-import theme from '../../../../theme'
+import ButtonLink from '@Components/ButtonLink'
+import theme from '@Theme'
 
 // formik input components
-import FormikTextInput from '../../../components/FormikTextInput'
-import FormikDatepicker from '../../../components/FormikDatepicker'
-import FormikSelectInput from '../../../components/FormikSelectInput'
+import FormikTextInput from '@Components/FormikTextInput'
+import FormikDatepicker from '@Components/FormikDatepicker'
+import FormikSelectInput from '@Components../../../components/FormikSelectInput'
 import CountryFilterInput from './CountryFilterInput'
 
 const countriesList = Object.entries(countries).map(([key, value]) => ({
@@ -40,14 +41,14 @@ const RegisterForm = ({ onSubmit, isSubmitting, setFieldError, errors }) => {
     <Box>
       <FormikTextInput
         name='email'
-        placeholder='Correo electrónico'
+        placeholder='E-mail'
         autoCorrect={false}
         keyboardType='email-address'
       />
 
       <FormikTextInput
         name='password'
-        placeholder='Contraseña'
+        placeholder='Password'
         autoCorrect={false}
         InputRightElement={
           <Icon
@@ -67,7 +68,7 @@ const RegisterForm = ({ onSubmit, isSubmitting, setFieldError, errors }) => {
 
       <FormikTextInput
         name='confirmPassword'
-        placeholder='Confirmar contraseña'
+        placeholder='Confirm password'
         autoCorrect={false}
         InputRightElement={
           <Icon
@@ -87,15 +88,15 @@ const RegisterForm = ({ onSubmit, isSubmitting, setFieldError, errors }) => {
 
       <FormikTextInput
         name='username'
-        placeholder='Nombre de usuario'
+        placeholder='Username'
         autoCorrect={false}
       />
 
-      <FormikDatepicker name='birthdate' placeholder='Fecha de nacimiento'/>
+      <FormikDatepicker name='birthdate' placeholder='Birthdate'/>
 
       <FormikSelectInput
         name='country'
-        placeholder='País'
+        placeholder='Country'
         items={filteredCountriesList}
         _actionSheetBody={{
           minH: '100%',
@@ -110,7 +111,7 @@ const RegisterForm = ({ onSubmit, isSubmitting, setFieldError, errors }) => {
         mt={theme.fontSizes.large}
         onPress={onSubmit}
         isLoading={isSubmitting}
-        isLoadingText='Registrando cuenta'
+        isLoadingText='Creating account'
         _loading={{
           _text: {
             color: theme.colors.primary
@@ -120,9 +121,16 @@ const RegisterForm = ({ onSubmit, isSubmitting, setFieldError, errors }) => {
           color: theme.colors.primary
         }}
       >
-        Registrarse
+        Create account
       </Button>
-      <Button variant='link' mt={theme.fontSizes.small}>Ya tengo una cuenta</Button>
+
+      <ButtonLink
+        to='/login'
+        variant='link'
+        mt={theme.fontSizes.small}
+      >
+        I am already registered
+      </ButtonLink>
     </Box>
   )
 }

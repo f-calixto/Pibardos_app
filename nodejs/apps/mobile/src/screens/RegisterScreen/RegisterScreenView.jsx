@@ -4,7 +4,7 @@ import { Formik } from 'formik'
 import Constants from 'expo-constants'
 import validationSchema from './validationSchema'
 import RegisterForm from './components/RegisterForm'
-import theme from '../../../theme'
+import theme from '@Theme'
 
 const RegisterScreenView = ({ initialValues, onSubmit, userState }) => {
   return (
@@ -29,7 +29,7 @@ const RegisterScreenView = ({ initialValues, onSubmit, userState }) => {
               alt='logo'
             />
             <Text mt='3' fontSize='35' fontWeight='bold'>
-              Registrar Cuenta
+              Create account
             </Text>
           </Flex>
           <Formik
