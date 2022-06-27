@@ -18,14 +18,14 @@ const LoginForm = ({ onSubmit, isSubmitting, setFieldError, fetchErrors }) => {
     <Box>
       <FormikTextInput
         name='email'
-        placeholder='Correo electrónico'
+        placeholder='E-mail'
         autoCorrect={false}
         keyboardType='email-address'
       />
 
       <FormikTextInput
         name='password'
-        placeholder='Contraseña'
+        placeholder='Password'
         autoCorrect={false}
         InputRightElement={
           <Icon
@@ -48,7 +48,7 @@ const LoginForm = ({ onSubmit, isSubmitting, setFieldError, fetchErrors }) => {
         mt={theme.fontSizes.large}
         onPress={onSubmit}
         isLoading={isSubmitting}
-        isLoadingText='Iniciando sesión'
+        isLoadingText='Logging in to account'
         _loading={{
           _text: {
             color: theme.colors.primary
@@ -58,7 +58,7 @@ const LoginForm = ({ onSubmit, isSubmitting, setFieldError, fetchErrors }) => {
           color: theme.colors.primary
         }}
       >
-        Iniciar sesión
+        Sign In
       </Button>
     </Box>
   )

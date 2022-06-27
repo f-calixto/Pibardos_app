@@ -1,10 +1,11 @@
 import { Platform, Image } from 'react-native'
-import { Flex, Text, ScrollView, Button, VStack, KeyboardAvoidingView } from 'native-base'
+import { Flex, Text, ScrollView, VStack, KeyboardAvoidingView } from 'native-base'
 import Constants from 'expo-constants'
 import { Formik } from 'formik'
-import theme from '@Theme'
 import LoginForm from './components/LoginForm'
+import ButtonLink from '@Components/ButtonLink'
 import validationSchema from './validationSchema'
+import theme from '@Theme'
 
 const LoginScreenView = ({ initialValues, onSubmit, fetchErrors }) => {
   return (
@@ -26,7 +27,7 @@ const LoginScreenView = ({ initialValues, onSubmit, fetchErrors }) => {
               alt='logo'
             />
             <Text mt='3' fontSize='35' fontWeight='bold'>
-              Iniciar Sesion
+              Sign In
             </Text>
           </Flex>
           <Formik
@@ -44,8 +45,14 @@ const LoginScreenView = ({ initialValues, onSubmit, fetchErrors }) => {
             )}
           </Formik>
           <VStack mt={theme.fontSizes.small}>
-            <Button variant='link'>Olvidé mi contraseña</Button>
-            <Button variant='link'>No estoy registrado</Button>
+            {/* TODO: Add recovery password feature */}
+            {/* <Button variant='link'>Olvidé mi contraseña</Button> */}
+            <ButtonLink
+              to='/register'
+              variant='link'
+            >
+              I am not registered
+            </ButtonLink>
           </VStack>
         </VStack>
       </ScrollView>
