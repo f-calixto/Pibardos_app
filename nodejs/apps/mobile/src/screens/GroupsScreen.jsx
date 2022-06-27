@@ -1,5 +1,5 @@
-import { Heading, Button, Flex, Text, ScrollView, Popover } from 'native-base'
-import HeaderBar from '../HeaderBar'
+import { Heading, Button, Flex, Text, ScrollView } from 'native-base'
+import HeaderBar from '../components/HeaderBar'
 import theme from '../../theme'
 
 const GroupsScreen = () => {

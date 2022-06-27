@@ -1,7 +1,7 @@
 import { Icon, Box, Image, Menu } from 'native-base'
 import { Pressable } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import group from './assets/logos/group.png'
+// import group from './assets/logos/group.png'
 
 // use props to pass name of groups user is in and icon - pass as assoc array?
 const HeaderBar = () => {
@@ -21,7 +21,7 @@ const HeaderBar = () => {
           return (
             <Pressable {...triggerProps}>
               <Image
-                source={require('./assets/logos/group.png')}
+                source={require('../assets/logos/group.png')}
                 alt='logo'
               ></Image>
             </Pressable>
@@ -34,7 +34,7 @@ const HeaderBar = () => {
         </Menu.Item>
       </Menu>
 
-      <Image source={require('./assets/logos/favicon.png')} alt='logo'></Image>
+      <Image source={require('../assets/logos/favicon.png')} alt='logo'></Image>
 
       <Menu
         w='190'
@@ -42,7 +42,7 @@ const HeaderBar = () => {
           return (
             <Pressable {...triggerProps}>
               <Image
-                source={require('./assets/logos/user.png')}
+                source={require('../assets/logos/user.png')}
                 alt='logo'
               ></Image>
             </Pressable>

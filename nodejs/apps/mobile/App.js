@@ -1,7 +1,6 @@
 import { NativeBaseProvider, StatusBar, Box } from 'native-base'
 // import SplashScreen from './src/containers/SplashScreen'
 import theme from './theme'
-// import HeaderBar from './src/HeaderBar'
 
 import { NativeRouter } from 'react-router-native'
 import { Provider as ReduxProvider } from 'react-redux'

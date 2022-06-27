@@ -37,7 +37,7 @@ const AuthScreen = () => {
         </ButtonLink>
       </Flex>
       <Flex align='center' pb='5%'>
-        <Text>Made with 🖤 by Frank, Mazen e Ivanchu </Text>
+        <Text>Made with 🖤 by Frank, Mazen and Ivanchu </Text>
       </Flex>
     </Flex>
   )

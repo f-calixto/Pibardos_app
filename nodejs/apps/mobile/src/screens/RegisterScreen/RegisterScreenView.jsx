@@ -9,10 +9,7 @@ import theme from '@Theme'
 const RegisterScreenView = ({ initialValues, onSubmit, userState }) => {
   return (
     <KeyboardAvoidingView
-      h={{
-        base: '800px',
-        lg: 'auto'
-      }}
+      flex={1}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView>

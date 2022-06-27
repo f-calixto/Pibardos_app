@@ -51,11 +51,11 @@ const LoginForm = ({ onSubmit, isSubmitting, setFieldError, fetchErrors }) => {
         isLoadingText='Logging in to account'
         _loading={{
           _text: {
-            color: theme.colors.primary
+            color: theme.colors.secondary
           }
         }}
         _spinner={{
-          color: theme.colors.primary
+          color: theme.colors.secondary
         }}
       >
         Sign In

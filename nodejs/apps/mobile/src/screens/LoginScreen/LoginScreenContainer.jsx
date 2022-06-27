@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { loginUser } from '@ReduxSlices/slices/user'
 
 import LoginScreenView from './LoginScreenView'
+import { Navigate } from 'react-router-native'
 
 const initialValues = {
   email: '',
@@ -18,6 +19,10 @@ const LoginScreenContainer = () => {
       password: values.password
     }))
     setSubmitting(false)
+  }
+
+  if (userState.isLoggedIn) {
+    return <Navigate to='/' />
   }
 
   return (
