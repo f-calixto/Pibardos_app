@@ -1,6 +1,7 @@
-import { Button, Flex, Text } from 'native-base'
-import theme from '../../theme'
 import { Image } from 'react-native'
+import { Flex, Text } from 'native-base'
+import ButtonLink from '@Components/ButtonLink'
+import theme from '@Theme'
 
 const AuthScreen = () => {
   return (
@@ -17,27 +18,26 @@ const AuthScreen = () => {
           Pibardos App
         </Text>
       </Flex>
-      <Flex flex='1' justify='center' align='center' mt='-30%'>
-        <Button
-          width='90%'
+      <Flex flex='1' justify='center' mt='-30%' px={5}>
+        <ButtonLink
+          to='/login'
           bg={theme.colors.blue}
-          height='8%'
-          onPress={() => console.log('login press')}
+          h={12}
         >
-          Iniciar Sesion
-        </Button>
-        <Button
-          mt='3%'
+          Sign In
+        </ButtonLink>
+
+        <ButtonLink
+          to='/register'
+          mt={3}
+          h={12}
           bg={theme.colors.green}
-          width='90%'
-          height='8%'
-          onPress={() => console.log('register pressed')}
         >
-          Crear una nueva cuenta
-        </Button>
+          Create an account
+        </ButtonLink>
       </Flex>
       <Flex align='center' pb='5%'>
-        <Text>Hecho con 🖤 por Frank, Mazen e Ivanchu </Text>
+        <Text>Made with 🖤 by Frank, Mazen e Ivanchu </Text>
       </Flex>
     </Flex>
   )
