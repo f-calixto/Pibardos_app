@@ -17,7 +17,7 @@ export const registerUser = createAsyncThunk('user/registerUser',
       }))
     } catch (error) {
       return rejectWithValue({
-        statusCode: error.response.status,
+        error: error.response.data.error,
         errors: error.response.data.errors
       })
     }
@@ -66,6 +66,7 @@ const userSlice = createSlice({
     },
     [registerUser.rejected]: (state, action) => {
       state.status = 'failed'
+      state.errors = action.payload.errors || null
 
       // TODO: refactor this block to avoid repeated code
       // if server not return an errors array, then set an error message

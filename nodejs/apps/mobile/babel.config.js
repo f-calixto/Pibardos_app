@@ -8,7 +8,7 @@ module.exports = function (api) {
           '@Components': './src/components',
           '@Containers': './src/containers',
           '@Screens': './src/screens',
-          '@ReduxSlices': './src/redux',
+          '@Redux': './src/redux',
           '@Hooks': './src/hooks',
           '@Assets': './src/assets',
           '@Theme': './theme.js',

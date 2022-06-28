@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Navigate } from 'react-router-native'
-import { loginUser } from '@ReduxSlices/slices/user'
+import { loginUser } from '../../redux/slices/user'
 import { useToast } from 'native-base'
 import ToastAlert from '@Components/ToastAlert'
 
