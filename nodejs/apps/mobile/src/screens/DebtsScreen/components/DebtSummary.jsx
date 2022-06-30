@@ -1,11 +1,12 @@
 import React from 'react'
 import { Box, Text, Flex } from 'native-base'
+import theme from '@Theme'
 
 const DebtSummary = ({ user, owed, owe }) => {
   return (
-    <Flex borderWidth='1' borderRadius='14px' alignItems='center' marginX='10px'>
+    <Flex borderWidth='1' borderRadius='14px' alignItems='center' marginX='10px' bgColor={theme.colors.lightGrey}>
       <Box>
-        <Text fontSize='15px'>{user}s SUMMARY</Text>
+        <Text fontSize='15px'>{user}`s Summary</Text>
       </Box>
 
       <Flex width='full' flexDirection='row' justifyContent='space-around' marginY='20px'>

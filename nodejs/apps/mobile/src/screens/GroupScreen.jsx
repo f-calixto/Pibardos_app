@@ -1,10 +1,10 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import { Image, Box, AspectRatio, Heading, Center } from 'native-base'
 import ViewWithBars from '@Containers/ViewWithBars'
 import theme from '@Theme'
 
 const GroupScreen = () => {
-  const [isLoading, setIsLoading] = useState(false)
+  // const [isLoading, setIsLoading] = useState(false)
 
   return (
     <ViewWithBars>
@@ -33,7 +33,7 @@ const GroupScreen = () => {
         >
           <Heading
             textAlign='center'
-            color='white'
+            color={theme.colors.white}
           >
             Los Pibardos
           </Heading>
