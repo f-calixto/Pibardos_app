@@ -1,6 +1,19 @@
 import { IconButton } from 'native-base'
+import { useLinkPressHandler } from 'react-router-native'
 
-const NavBarItem = ({ icon, ...rest }) => {
+const NavBarItem = ({
+  icon,
+  onPress,
+  replace = false,
+  state,
+  to,
+  ...rest
+}) => {
+  const handlePress = useLinkPressHandler(to, {
+    replace,
+    state
+  })
+
   return (
     <IconButton
       icon={icon}
@@ -10,6 +23,11 @@ const NavBarItem = ({ icon, ...rest }) => {
         size: 25
       }}
       {...rest}
+      onPress={event => {
+        if (!event.defaultPrevented) {
+          handlePress(event)
+        }
+      }}
     />
   )
 }

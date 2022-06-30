@@ -16,6 +16,7 @@ const NavBarView = () => {
     >
       <NavBarItem
         icon={<Ionicons name='card-outline' />}
+        to='/debts'
       />
       <NavBarItem
         icon={<Ionicons name='home-outline' />}
