@@ -5,7 +5,8 @@ import { useSelector } from 'react-redux'
 import AuthScreen from '@Screens/AuthScreen'
 import RegisterScreen from '@Screens/RegisterScreen'
 import LoginScreen from '@Screens/LoginScreen'
-import GroupsScreen from '@Screens/GroupsScreen'
+import GroupScreen from '@Screens/GroupScreen'
+import ManageGroupsScreen from '@Screens/ManageGroupsScreen'
 
 const RouterConfig = () => {
   const isLoggedIn = useSelector(state => state.user.isLoggedIn)
@@ -14,7 +15,7 @@ const RouterConfig = () => {
     <Routes>
       <Route exact path='/'
         element={isLoggedIn
-          ? <GroupsScreen />
+          ? <GroupScreen />
           : <Navigate to='/auth' />}
       />
 
@@ -23,6 +24,8 @@ const RouterConfig = () => {
       <Route exact path='/register' element={<RegisterScreen />} />
 
       <Route exact path='/login' element={<LoginScreen />} />
+
+      <Route exact path='/manage-groups' element={<ManageGroupsScreen />} />
 
       <Route path='*' element={
         <Navigate to='/' replace />}
