@@ -14,12 +14,16 @@ const RouterConfig = () => {
 
   return (
     <Routes>
-      <Route exact path='/'
+      {/* <Route exact path='/'
         element={isLoggedIn
           ? <GroupScreen />
           : <Navigate to='/auth' />}
+      /> */}
+<Route exact path='/'
+        element={isLoggedIn
+          ? <GroupScreen />
+          : <Navigate to='/debts' />}
       />
-
       <Route exact path='/auth' element={<AuthScreen />}/>
 
       <Route exact path='/register' element={<RegisterScreen />} />
