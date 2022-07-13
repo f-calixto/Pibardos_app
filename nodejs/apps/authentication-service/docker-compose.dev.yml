@@ -9,6 +9,9 @@ services:
       args:
         - BUILD_CONTEXT=authentication-service
     restart: always
+    depends_on:
+      - mongodb
+      - rabbitmq
     ports:
       - '3000:3000'
     environment:
@@ -17,10 +20,28 @@ services:
       - BCRYPT_SALT_ROUNDS=12
       - ACCESS_TOKEN_SECRET=jwtsecret
       - ACCESS_TOKEN_EXP_TIME=10m
+      - RABBITMQ_URI_CONNECTION=amqp://rabbitmquser:rabbitmqpassword@rabbitmq
     links:
       - mongodb
+      - rabbitmq
+
   mongodb:
     container_name: mongodb
     image: mongo:latest
+    restart: always
     expose:
       - 27017
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    expose:
+      - 5672
+    environment:
+      - AMQP_URL='amqp://rabbitmq?connection_attempts=5&retry_delay=5'
+      - RABBITMQ_DEFAULT_USER=rabbitmquser
+      - RABBITMQ_DEFAULT_PASS=rabbitmqpassword

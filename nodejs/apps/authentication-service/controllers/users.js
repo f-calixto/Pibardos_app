@@ -20,8 +20,8 @@ module.exports = {
     const { email, password } = req.body
 
     try {
-      const accessToken = await usersService.authenticate({ email, password })
-      return res.status(200).json(accessToken)
+      const user = await usersService.authenticate({ email, password })
+      return res.status(200).json(user)
     } catch (err) {
       if (err.name === SERVICE_ERRORS.USER_NOT_FOUND) { return res.status(404).json({ errors: err.errors }) }
       if (err.name === SERVICE_ERRORS.INVALID_CREDENTIALS) { return res.status(401).json({ errors: err.errors }) }

@@ -11,6 +11,7 @@
   "author": "Agustin Lanusse (@alanusse)",
   "license": "MIT",
   "dependencies": {
+    "amqplib": "0.10.0",
     "jsonwebtoken": "8.5.1"
   }
 }

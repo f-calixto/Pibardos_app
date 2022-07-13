@@ -2,6 +2,7 @@ const ServiceError = require('../utils/ServiceError')
 const { SERVICE_ERRORS } = require('../constants/errors')
 const TokensService = require('./token.service')
 const tokensService = new TokensService()
+const usersQueue = require('./amqp/usersQueue.service')
 
 class UsersService {
   constructor (UserModel) {
@@ -29,6 +30,15 @@ class UsersService {
       username
     })
 
+    await usersQueue.publish({
+      id: user.id,
+      email,
+      username,
+      birthdate,
+      country,
+      created_at: user.created_at
+    })
+
     return user
   }
 
@@ -53,7 +63,12 @@ class UsersService {
 
     const accessToken = tokensService.signAccessToken({ userId: user.id, username: user.username, email: user.email })
 
-    return { accessToken }
+    return {
+      accessToken,
+      id: user.id,
+      email: user.email,
+      username: user.username
+    }
   }
 }
 
