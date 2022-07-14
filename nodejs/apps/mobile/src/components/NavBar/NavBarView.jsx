@@ -1,6 +1,4 @@
 import { Flex } from 'native-base'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import theme from '@Theme'
 
 import NavBarItem from './components/NavBarItem'
 
@@ -11,18 +9,23 @@ const NavBarView = () => {
       justifyContent='space-between'
       alignItems='center'
       px={5}
-      bgColor={theme.colors.primary}
+      bgColor='white'
       h={60}
-    >
+      >
       <NavBarItem
-        icon={<Ionicons name='card-outline' />}
+        icon='home-outline'
+      />
+      <NavBarItem
+        icon='calendar-outline'
+      />
+      <NavBarItem
+        selected
+        icon='card-outline'
         to='/debts'
       />
       <NavBarItem
-        icon={<Ionicons name='home-outline' />}
-      />
-      <NavBarItem
-        icon={<Ionicons name='calendar-outline' />}
+        icon='person-outline'
+        to='/profile'
       />
     </Flex>
   )

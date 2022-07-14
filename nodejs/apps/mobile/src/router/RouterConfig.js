@@ -7,7 +7,7 @@ import RegisterScreen from '@Screens/RegisterScreen'
 import LoginScreen from '@Screens/LoginScreen'
 import GroupScreen from '@Screens/GroupScreen'
 import ManageGroupsScreen from '@Screens/ManageGroupsScreen'
-import DebtsScreenContainer from '@Screens/DebtsScreen'
+import DebtsScreen from '@Screens/DebtsScreen'
 
 const RouterConfig = () => {
   const isLoggedIn = useSelector(state => state.user.isLoggedIn)
@@ -32,7 +32,7 @@ const RouterConfig = () => {
 
       <Route exact path='/manage-groups' element={<ManageGroupsScreen />} />
 
-      <Route exact path='/debts' element={<DebtsScreenContainer />} />
+      <Route exact path='/debts' element={<DebtsScreen />} />
 
       <Route path='*' element={
         <Navigate to='/' replace />}

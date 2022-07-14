@@ -1,27 +1,23 @@
 import { SafeAreaView } from 'react-native'
-import { View, Flex, Image, StatusBar } from 'native-base'
-import theme from '@Theme'
+import { View, Flex, StatusBar, Heading } from 'native-base'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
-// images
-import Favicon from '@Assets/logos/favicon.png'
-import GroupsButton from './components/GroupsButton'
-import ProfileButton from './components/ProfileButton'
-
-const TopBarView = () => {
+const TopBarView = ({ pageName = 'Untitled' }) => {
   return (
-    <View backgroundColor={theme.colors.primary} borderBottomRadius={20}>
-      <StatusBar barStyle='light-content' backgroundColor={theme.colors.primary}/>
+    <View backgroundColor='amber.400'>
+      <StatusBar barStyle='dark-content' backgroundColor='amber.400'/>
       <SafeAreaView>
         <Flex
           flexDir='row'
           justifyContent='space-between'
           alignItems='center'
-          py={3}
+          py={4}
           px={4}
         >
-          <GroupsButton />
-          <Image source={Favicon} alt='app-logo' w={10} h={10} />
-          <ProfileButton />
+          <Heading size='xl'>{pageName}</Heading>
+          <Ionicons name='notifications-outline' size={28} />
+          {/* <GroupsButton />
+          <ProfileButton /> */}
         </Flex>
       </SafeAreaView>
     </View>
