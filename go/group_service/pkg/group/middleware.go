@@ -13,7 +13,7 @@ import (
 	"github.com/coding-kiko/group_service/pkg/errors"
 
 	// third party
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 var secretKey = os.Getenv("JWT_SECRET")
