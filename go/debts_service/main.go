@@ -1,6 +1,6 @@
 // package main
 
-import (
+// import (
 	// std lib
 	"database/sql"
 	"fmt"
