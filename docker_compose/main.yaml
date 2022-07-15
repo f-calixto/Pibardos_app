@@ -71,23 +71,23 @@ services:
   ########################
   ####### portainer ######
   ########################
-  portainer:
-    image: portainer/portainer-ce:linux-arm
-    restart: unless-stopped
-    container_name: portainer
-    expose:
-      - "9000"
-    security_opt:
-      - no-new-privileges:true
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer:/data
-    environment:
-      - VIRTUAL_HOST=portainer.pibardosapp.com
-      - VIRTUAL_PORT=9000
-      - LETSENCRYPT_HOST=portainer.pibardosapp.com
-      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+  # portainer:
+  #   image: portainer/portainer-ce:linux-arm
+  #   restart: unless-stopped
+  #   container_name: portainer
+  #   expose:
+  #     - "9000"
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - portainer:/data
+  #   environment:
+  #     - VIRTUAL_HOST=portainer.pibardosapp.com
+  #     - VIRTUAL_PORT=9000
+  #     - LETSENCRYPT_HOST=portainer.pibardosapp.com
+  #     - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
 
   ########################
   ######## adminer #######
