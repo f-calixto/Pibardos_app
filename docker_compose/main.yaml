@@ -9,11 +9,11 @@ services:
     restart: always
     container_name: pibardosapp-nginx-proxy
     ports:
-      - "81:81"
+      - "81:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     environment:
-      - HTTP_PORT=81
+      - HTTP_PORT=80
 
   ########################
   #### landing-page ######
@@ -23,12 +23,12 @@ services:
     restart: always
     container_name: landing-page-pibardosapp
     expose:
-      - "81"
+      - "80"
     volumes:
       - ../volumes/www:/usr/share/nginx/html:ro
     environment:
       - VIRTUAL_HOST=pibardosapp.com,www.pibardosapp.com
-      - VIRTUAL_PORT=81
+      - VIRTUAL_PORT=80
 
   ########################
   ####### portainer ######
