@@ -6,22 +6,26 @@ services:
   ########################
   nginx-proxy:
     image: nginxproxy/nginx-proxy
+    restart: always
+    container_name: pibardosapp-nginx-proxy
     ports:
       - "81:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+    environment:
+      - HTTP_PORT=81
 
   ########################
-  ###### nginx-home ######
+  #### landing-page ######
   ########################
-  nginx-static-page:
+  landing-page-pibardosapp:
     image: nginx
     restart: always
-    container_name: nginx-static-page
+    container_name: landing-page-pibardosapp
     expose:
       - "80"
     volumes:
-      - /home/pi/Repos/Pibardos_app/volumes/www:/usr/share/nginx/html:ro
+      - ../volumes/www:/usr/share/nginx/html:ro
     environment:
       - VIRTUAL_HOST=pibardosapp.com,www.pibardosapp.com
 
