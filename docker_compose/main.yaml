@@ -21,7 +21,7 @@ services:
     expose:
       - "80"
     volumes:
-      - ../volumes/www:/usr/share/nginx/html:ro
+      - /home/pi/Repos/Pibardos_app/volumes/www:/usr/share/nginx/html:ro
     environment:
       - VIRTUAL_HOST=pibardosapp.com,www.pibardosapp.com
 
