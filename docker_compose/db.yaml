@@ -2,7 +2,7 @@ version: '3'
 
 services:
   users_groups_postgres:
-    image: arm32v7/postgres:latest
+    image: arm64v8/postgres:latest
     container_name: users_groups_postgres
     restart: always
     expose:
@@ -16,7 +16,7 @@ services:
       - /data/postgres_data_pibardos_app/users_groups:/var/lib/postgresql/data
 
   calendar_postgres:
-    image: arm32v7/postgres:latest
+    image: arm64v8/postgres:latest
     container_name: calendar_postgres
     restart: always
     expose:
@@ -30,7 +30,7 @@ services:
       - /data/postgres_data_pibardos_app/calendar:/var/lib/postgresql/data
 
   debts_postgres:
-    image: arm32v7/postgres:latest
+    image: arm64v8/postgres:latest
     container_name: debts_postgres
     restart: always
     expose:

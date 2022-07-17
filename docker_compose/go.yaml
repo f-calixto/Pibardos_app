@@ -35,8 +35,7 @@ services:
       - VIRTUAL_PATH=/users/
       - VIRTUAL_DEST=/
       - VIRTUAL_HOST=api.pibardosapp.com
-      - LETSENCRYPT_HOST=api.pibardosapp.com
-      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
 
   ########################
   #### group_service #####
@@ -71,8 +70,7 @@ services:
       - VIRTUAL_PATH=/groups/
       - VIRTUAL_DEST=/
       - VIRTUAL_HOST=api.pibardosapp.com
-      - LETSENCRYPT_HOST=api.pibardosapp.com
-      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
 
   ########################
   ### calendar_service ###
@@ -100,8 +98,7 @@ services:
       - VIRTUAL_PATH=/calendar/
       - VIRTUAL_DEST=/
       - VIRTUAL_HOST=api.pibardosapp.com
-      - LETSENCRYPT_HOST=api.pibardosapp.com
-      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
 
   ########################
   ##### debts_service ####
@@ -129,8 +126,7 @@ services:
   #     - VIRTUAL_PATH=/debts/
   #     - VIRTUAL_DEST=/
   #     - VIRTUAL_HOST=api.pibardosapp.com
-  #     - LETSENCRYPT_HOST=api.pibardosapp.com
-  #     - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
+
 
   ########################
   #### avatar_service ####
@@ -159,8 +155,6 @@ services:
       - VIRTUAL_PATH=/
       - VIRTUAL_DEST=/
       - VIRTUAL_HOST=static.pibardosapp.com
-      - LETSENCRYPT_HOST=static.pibardosapp.com
-      - LETSENCRYPT_EMAIL=lanusseagustin@gmail.com
     volumes:
       - /data/static/80:/data/static/80
       - /data/static/300:/data/static/300
