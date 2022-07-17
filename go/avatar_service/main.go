@@ -11,23 +11,31 @@ import (
 	"github.com/coding-kiko/avatar_service/pkg/log"
 
 	// third party
+	"github.com/spf13/viper"
 	"github.com/streadway/amqp"
-)
-
-var (
-	// Api
-	ApiPort = os.Getenv("API_PORT")
-	// Rabbit
-	RabbitMQUser = os.Getenv("RABBITMQ_USER")
-	RabbitMQPwd  = os.Getenv("RABBITMQ_PWD")
-	RabbitMQHost = os.Getenv("RABBITMQ_HOST")
-	RabbitMQPort = os.Getenv("RABBITMQ_PORT")
-	// files folder absolute path
-	StaticPath = os.Getenv("STATIC_PATH")
 )
 
 func main() {
 	logger := log.NewLogger()
+
+	viper.SetConfigFile("prod.env")
+	err := viper.ReadInConfig()
+	if err != nil {
+		logger.Error("main.go", "main", err.Error())
+		panic(err)
+	}
+
+	var (
+		// Api
+		ApiPort = viper.Get("API_PORT").(string)
+		// Rabbit
+		RabbitMQUser = viper.Get("RABBITMQ_USER").(string)
+		RabbitMQPwd  = viper.Get("RABBITMQ_PWD").(string)
+		RabbitMQHost = viper.Get("RABBITMQ_HOST").(string)
+		RabbitMQPort = viper.Get("RABBITMQ_PORT").(string)
+		// files folder absolute path
+		StaticPath = viper.Get("STATIC_PATH").(string)
+	)
 
 	// initialize avatar Storage layer
 	storage := avatar.NewAvatarStorage(StaticPath, logger)
