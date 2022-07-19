@@ -23,82 +23,69 @@ func NewService(repository Repository, logger log.Logger) Service {
 }
 
 type Service interface {
-	CreateRequest(req DebtRequest) (DebtRequest, error)
-	AcceptDebt(id string) (DebtRequest, error)
-	RejectDebt(id string) (DebtRequest, error)
-	GetSentRequests(req GetRequestsRequest) ([]DebtRequest, error)
-	GetReceivedRequests(req GetRequestsRequest) ([]DebtRequest, error)
-	GetGroupDebts(groupId string) ([]Borrower, error)
-	CancelDebt(req CancelDebtRequest) (Borrower, error)
+	CreateDebt(req DebtRequest) (Debt, error)
+	RejectDebt(req PatchDebtRequest) (Debt, error)
+	AcceptDebt(req PatchDebtRequest) (Debt, error)
+	CancelDebt(req PatchDebtRequest) (Debt, error)
+	GetSentDebts(req GetDebtsRequest) ([]Debt, error)
+	GetReceivedDebts(req GetDebtsRequest) ([]Debt, error)
 }
 
-func (s *service) CancelDebt(req CancelDebtRequest) (Borrower, error) {
-	debt, err := s.repository.CancelDebt(req)
+func (s *service) CreateDebt(req DebtRequest) (Debt, error) {
+	debt := Debt{
+		Id:          uuid.NewString(),
+		GroupId:     req.GroupId,
+		LenderId:    req.LenderId,
+		BorrowerId:  req.BorrowerId,
+		Status:      2,
+		Description: req.Description,
+		Date:        req.Date,
+		Amount:      req.Amount,
+	}
+
+	err := s.repository.CreateDebt(debt)
 	if err != nil {
-		return Borrower{}, err
+		return Debt{}, err
 	}
 	return debt, nil
 }
 
-func (s *service) GetGroupDebts(groupId string) ([]Borrower, error) {
-	debts, err := s.repository.GetGroupDebts(groupId)
+func (s *service) RejectDebt(req PatchDebtRequest) (Debt, error) {
+	debt, err := s.repository.RejectDebt(req)
 	if err != nil {
-		return []Borrower{}, err
+		return Debt{}, err
 	}
-	return debts, nil
+	return debt, nil
 }
 
-func (s *service) GetSentRequests(req GetRequestsRequest) ([]DebtRequest, error) {
-	sent, err := s.repository.GetSentRequests(req)
+func (s *service) AcceptDebt(req PatchDebtRequest) (Debt, error) {
+	debt, err := s.repository.AcceptDebt(req)
 	if err != nil {
-		return []DebtRequest{}, err
+		return Debt{}, err
+	}
+	return debt, nil
+}
+
+func (s *service) CancelDebt(req PatchDebtRequest) (Debt, error) {
+	debt, err := s.repository.CancelDebt(req)
+	if err != nil {
+		return Debt{}, err
+	}
+	return debt, nil
+}
+
+func (s *service) GetSentDebts(req GetDebtsRequest) ([]Debt, error) {
+	sent, err := s.repository.GetSentDebts(req)
+	if err != nil {
+		return []Debt{}, err
 	}
 	return sent, nil
 }
 
-func (s *service) GetReceivedRequests(req GetRequestsRequest) ([]DebtRequest, error) {
-	received, err := s.repository.GetReceivedRequests(req)
+func (s *service) GetReceivedDebts(req GetDebtsRequest) ([]Debt, error) {
+	received, err := s.repository.GetReceivedDebts(req)
 	if err != nil {
-		return []DebtRequest{}, err
+		return []Debt{}, err
 	}
 	return received, nil
-}
-
-func (s *service) RejectDebt(id string) (DebtRequest, error) {
-	debtRequest, err := s.repository.RejectDebt(id)
-	if err != nil {
-		return DebtRequest{}, err
-	}
-	return debtRequest, nil
-}
-
-func (s *service) AcceptDebt(id string) (DebtRequest, error) {
-
-	debtRequest, err := s.repository.AcceptDebt(id)
-	if err != nil {
-		return DebtRequest{}, err
-	}
-
-	balanceReq := BalanceDebtRequest{
-		GroupId:    debtRequest.GroupId,
-		LenderId:   debtRequest.LenderId,
-		BorrowerId: debtRequest.BorrowerId,
-		Amount:     debtRequest.Amount,
-	}
-	err = s.repository.BalanceDebt(balanceReq)
-	if err != nil {
-		return DebtRequest{}, err
-	}
-	return debtRequest, nil
-}
-
-func (s *service) CreateRequest(req DebtRequest) (DebtRequest, error) {
-	req.Id = uuid.NewString()
-	req.Status = 2 // status pending
-
-	err := s.repository.CreateRequest(req)
-	if err != nil {
-		return DebtRequest{}, err
-	}
-	return req, nil
 }

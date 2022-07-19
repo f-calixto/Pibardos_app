@@ -1,16 +1,7 @@
-FROM arm32v7/golang:alpine3.14  
+FROM arm64v8/alpine:3.14
 
-WORKDIR /app
+COPY ./bin .
 
-COPY go.mod .
-COPY go.sum .
-
-RUN go mod download
-
-EXPOSE 5004
-
-COPY . .
-
-RUN ["go", "build", "main.go"]
+EXPOSE 5003
 
 CMD ["./main"]

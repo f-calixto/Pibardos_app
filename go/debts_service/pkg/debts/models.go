@@ -4,7 +4,7 @@ package debts
 // used in middleware.go/handlers.go
 type UserIdKey struct{}
 
-type DebtRequest struct {
+type Debt struct {
 	Id          string `json:"id,omitempty"`
 	GroupId     string `json:"group_id,omitempty"`
 	LenderId    string `json:"lender_id"`
@@ -15,31 +15,22 @@ type DebtRequest struct {
 	Status      int64  `json:"status"`
 }
 
-type BalanceDebtRequest struct {
-	GroupId    string `json:"group_id,omitempty"`
-	LenderId   string `json:"lender_id"`
-	BorrowerId string `json:"borrower_id"`
-	Amount     int64  `json:"amount"`
+type DebtRequest struct {
+	GroupId     string `json:"group_id,omitempty"`
+	LenderId    string `json:"lender_id"`
+	BorrowerId  string `json:"borrower_id"`
+	Description string `json:"description"`
+	Date        string `json:"date"`
+	Amount      int64  `json:"amount"`
 }
 
-type GetRequestsRequest struct {
+type GetDebtsRequest struct {
 	GroupId string
 	UserId  string
 }
 
-type Borrower struct {
-	BorrowerId string `json:"borrower_id"`
-	Debts      []Debt `json:"debts"`
-}
-
-type Debt struct {
-	LenderId string `json:"lender_id"`
-	Amount   int64  `json:"amount"`
-}
-
-type CancelDebtRequest struct {
-	GroupId    string `json:",omitempty"`
-	Amount     int64  `json:"amount"`
-	LenderId   string `json:"lender_id"`
-	BorrowerId string `json:"borrower_id"`
+// used for accepting, rejecting or canceling a debt
+type PatchDebtRequest struct {
+	RequestId string
+	UserId    string
 }

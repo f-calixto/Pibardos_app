@@ -12,13 +12,12 @@ func NewRouter(handlers Handlers, logger log.Logger) *mux.Router {
 	router := mux.NewRouter()
 	logger.Info("router.go", "NewRouter", "Initializing handlers")
 
-	router.Path("/{group_id}").Methods("POST").HandlerFunc(handlers.CreateRequest)
-	router.Path("/{group_id}").Methods("GET").HandlerFunc(handlers.GetGroupDebts)
-	router.Path("/{request_id}/accept").Methods("PATCH").HandlerFunc(handlers.AcceptRequest)
-	router.Path("/{request_id}/reject").Methods("PATCH").HandlerFunc(handlers.RejectRequest)
-	router.Path("/{group_id}/received/{user_id}").Methods("GET").HandlerFunc(handlers.GetReceivedRequests)
-	router.Path("/{group_id}/sent/{user_id}").Methods("GET").HandlerFunc(handlers.GetSentRequests)
-	router.Path("/{group_id}/cancel").Methods("DELETE").HandlerFunc(handlers.CancelDebt)
+	router.Path("/{group_id}").Methods("POST").HandlerFunc(handlers.CreateDebt)
+	router.Path("/{group_id}/sent").Methods("GET").HandlerFunc(handlers.GetSentDebts)
+	router.Path("/{group_id}/received").Methods("GET").HandlerFunc(handlers.GetReceivedDebts)
+	router.Path("/{request_id}/accept").Methods("PATCH").HandlerFunc(handlers.AcceptDebt)
+	router.Path("/{request_id}/reject").Methods("PATCH").HandlerFunc(handlers.RejectDebt)
+	router.Path("/{request_id}/cancel").Methods("PATCH").HandlerFunc(handlers.CancelDebt)
 
 	router.Use(JwtMiddleware)
 
