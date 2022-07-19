@@ -65,6 +65,9 @@ func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
 	if updatedDebt == (Debt{}) {
 		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
 	}
+	if updatedDebt.Status == 1 {
+		return Debt{}, errors.NewUnauthorized("Debt is already accepted")
+	}
 
 	return updatedDebt, nil
 }
@@ -85,6 +88,9 @@ func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
 	if updatedDebt == (Debt{}) {
 		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
 	}
+	if updatedDebt.Status == 0 {
+		return Debt{}, errors.NewUnauthorized("Debt is already rejected")
+	}
 
 	return updatedDebt, nil
 }
@@ -104,6 +110,9 @@ func (r *repo) CancelDebt(req PatchDebtRequest) (Debt, error) {
 
 	if updatedDebt == (Debt{}) {
 		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the lender")
+	}
+	if updatedDebt.Status == 3 {
+		return Debt{}, errors.NewUnauthorized("Debt is already cancelled")
 	}
 
 	return updatedDebt, nil
