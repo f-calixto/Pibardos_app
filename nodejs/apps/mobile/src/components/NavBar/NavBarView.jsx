@@ -1,8 +1,12 @@
 import { Flex } from 'native-base'
+import { useLocation } from 'react-router-native'
 
 import NavBarItem from './components/NavBarItem'
+import ProfileButton from './components/ProfileButton'
 
 const NavBarView = () => {
+  const location = useLocation()
+
   return (
     <Flex
       flexDir='row'
@@ -14,19 +18,20 @@ const NavBarView = () => {
       >
       <NavBarItem
         icon='home-outline'
+        to='/'
+        currentPath={location.pathname}
       />
       <NavBarItem
         icon='calendar-outline'
+        to='/calendar'
+        currentPath={location.pathname}
       />
       <NavBarItem
-        selected
         icon='card-outline'
         to='/debts'
+        currentPath={location.pathname}
       />
-      <NavBarItem
-        icon='person-outline'
-        to='/profile'
-      />
+      <ProfileButton />
     </Flex>
   )
 }
