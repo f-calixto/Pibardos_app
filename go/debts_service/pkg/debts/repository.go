@@ -52,11 +52,11 @@ func (r *repo) CreateDebt(debt Debt) error {
 
 func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
 	rows, err := r.db.Exec(patchDebtQuery, 1, req.DebtId, req.UserId)
-	if n, _ := rows.RowsAffected(); n == 0 {
-		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
-	}
 	if err != nil {
 		return Debt{}, errors.NewNotFound("debt not found")
+	}
+	if n, _ := rows.RowsAffected(); n == 0 {
+		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
 	}
 	updatedDebt, err := r.GetDebt(req.DebtId)
 	if err != nil {
@@ -68,10 +68,10 @@ func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
 func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
 	rows, err := r.db.Exec(patchDebtQuery, 0, req.DebtId, req.UserId)
 	if err != nil {
-		if n, _ := rows.RowsAffected(); n == 0 {
-			return Debt{}, errors.NewUnauthorized("User rejecting is not the same as the borrower")
-		}
 		return Debt{}, errors.NewNotFound("debt not found")
+	}
+	if n, _ := rows.RowsAffected(); n == 0 {
+		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
 	}
 	updatedDebt, err := r.GetDebt(req.DebtId)
 	if err != nil {
@@ -83,10 +83,10 @@ func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
 func (r *repo) CancelDebt(req PatchDebtRequest) (Debt, error) {
 	rows, err := r.db.Exec(cancelDebtQuery, 3, req.DebtId, req.UserId)
 	if err != nil {
-		if n, _ := rows.RowsAffected(); n == 0 {
-			return Debt{}, errors.NewUnauthorized("User canceling is not the same as the lender")
-		}
 		return Debt{}, errors.NewNotFound("debt not found")
+	}
+	if n, _ := rows.RowsAffected(); n == 0 {
+		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the lender")
 	}
 	updatedDebt, err := r.GetDebt(req.DebtId)
 	if err != nil {
