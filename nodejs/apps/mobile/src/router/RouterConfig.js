@@ -19,17 +19,20 @@ const RouterConfig = () => {
           ? <GroupScreen />
           : <Navigate to='/auth' />}
       /> */}
-<Route exact path='/'
+
+      <Route exact path='/'
         element={isLoggedIn
-          ? <GroupScreen />
+          ? <Navigate to='/group' />
           : <Navigate to='/debts' />}
       />
+
+      {/* Authentication */}
       <Route exact path='/auth' element={<AuthScreen />}/>
-
       <Route exact path='/register' element={<RegisterScreen />} />
-
       <Route exact path='/login' element={<LoginScreen />} />
 
+      {/* Groups */}
+      <Route exact path='/group' element={<GroupScreen />} />
       <Route exact path='/manage-groups' element={<ManageGroupsScreen />} />
 
       <Route exact path='/debts' element={<DebtsScreen />} />
