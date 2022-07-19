@@ -51,12 +51,11 @@ func (r *repo) CreateDebt(debt Debt) error {
 }
 
 func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
-	r.logger.Debug(req.DebtId + " " + req.UserId)
 	rows, err := r.db.Exec(patchDebtQuery, 1, req.DebtId, req.UserId)
+	if n, _ := rows.RowsAffected(); n == 0 {
+		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
+	}
 	if err != nil {
-		if n, _ := rows.RowsAffected(); n == 0 {
-			return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
-		}
 		return Debt{}, errors.NewNotFound("debt not found")
 	}
 	updatedDebt, err := r.GetDebt(req.DebtId)
