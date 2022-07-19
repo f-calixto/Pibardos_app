@@ -15,9 +15,9 @@ func NewRouter(handlers Handlers, logger log.Logger) *mux.Router {
 	router.Path("/{group_id}").Methods("POST").HandlerFunc(handlers.CreateDebt)
 	router.Path("/{group_id}/sent").Methods("GET").HandlerFunc(handlers.GetSentDebts)
 	router.Path("/{group_id}/received").Methods("GET").HandlerFunc(handlers.GetReceivedDebts)
-	router.Path("/{request_id}/accept").Methods("PATCH").HandlerFunc(handlers.AcceptDebt)
-	router.Path("/{request_id}/reject").Methods("PATCH").HandlerFunc(handlers.RejectDebt)
-	router.Path("/{request_id}/cancel").Methods("PATCH").HandlerFunc(handlers.CancelDebt)
+	router.Path("/{debt_id}/accept").Methods("PATCH").HandlerFunc(handlers.AcceptDebt)
+	router.Path("/{debt_id}/reject").Methods("PATCH").HandlerFunc(handlers.RejectDebt)
+	router.Path("/{debt_id}/cancel").Methods("PATCH").HandlerFunc(handlers.CancelDebt)
 
 	router.Use(JwtMiddleware)
 

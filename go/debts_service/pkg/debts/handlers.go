@@ -78,12 +78,12 @@ func (h *handlers) CreateDebt(w http.ResponseWriter, r *http.Request) {
 func (h *handlers) CancelDebt(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	requestId := mux.Vars(r)["request_id"]
+	debtId := mux.Vars(r)["debt_id"]
 	userId := fmt.Sprintf("%v", r.Context().Value(UserIdKey{}))
 
 	req := PatchDebtRequest{
-		RequestId: requestId,
-		UserId:    userId,
+		DebtId: debtId,
+		UserId: userId,
 	}
 
 	debt, err := h.service.CancelDebt(req)
@@ -102,12 +102,12 @@ func (h *handlers) CancelDebt(w http.ResponseWriter, r *http.Request) {
 func (h *handlers) RejectDebt(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	requestId := mux.Vars(r)["request_id"]
+	debtId := mux.Vars(r)["debt_id"]
 	userId := fmt.Sprintf("%v", r.Context().Value(UserIdKey{}))
 
 	req := PatchDebtRequest{
-		RequestId: requestId,
-		UserId:    userId,
+		DebtId: debtId,
+		UserId: userId,
 	}
 
 	debt, err := h.service.RejectDebt(req)
@@ -126,12 +126,12 @@ func (h *handlers) RejectDebt(w http.ResponseWriter, r *http.Request) {
 func (h *handlers) AcceptDebt(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	requestId := mux.Vars(r)["request_id"]
+	debtId := mux.Vars(r)["debt_id"]
 	userId := fmt.Sprintf("%v", r.Context().Value(UserIdKey{}))
 
 	req := PatchDebtRequest{
-		RequestId: requestId,
-		UserId:    userId,
+		DebtId: debtId,
+		UserId: userId,
 	}
 
 	debt, err := h.service.AcceptDebt(req)

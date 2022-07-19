@@ -31,6 +31,6 @@ type GetDebtsRequest struct {
 
 // used for accepting, rejecting or canceling a debt
 type PatchDebtRequest struct {
-	RequestId string
-	UserId    string
+	DebtId string
+	UserId string
 }

@@ -52,13 +52,14 @@ func (r *repo) CreateDebt(debt Debt) error {
 }
 
 func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
-	_, err := r.db.Exec(patchDebtQuery, 1, req.RequestId, req.UserId)
+	_, err := r.db.Exec(patchDebtQuery, 1, req.DebtId, req.UserId)
 	if err != nil {
 		if strings.Contains(err.Error(), "borrower_id") {
 			return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
 		}
+		return Debt{}, errors.NewNotFound("debt not found")
 	}
-	updatedDebt, err := r.GetDebt(req.RequestId)
+	updatedDebt, err := r.GetDebt(req.DebtId)
 	if err != nil {
 		return Debt{}, err
 	}
@@ -66,13 +67,14 @@ func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
 }
 
 func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
-	_, err := r.db.Exec(patchDebtQuery, 0, req.RequestId, req.UserId)
+	_, err := r.db.Exec(patchDebtQuery, 0, req.DebtId, req.UserId)
 	if err != nil {
 		if strings.Contains(err.Error(), "borrower_id") {
 			return Debt{}, errors.NewUnauthorized("User rejecting is not the same as the borrower")
 		}
+		return Debt{}, errors.NewNotFound("debt not found")
 	}
-	updatedDebt, err := r.GetDebt(req.RequestId)
+	updatedDebt, err := r.GetDebt(req.DebtId)
 	if err != nil {
 		return Debt{}, err
 	}
@@ -80,13 +82,14 @@ func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
 }
 
 func (r *repo) CancelDebt(req PatchDebtRequest) (Debt, error) {
-	_, err := r.db.Exec(cancelDebtQuery, 3, req.RequestId, req.UserId)
+	_, err := r.db.Exec(cancelDebtQuery, 3, req.DebtId, req.UserId)
 	if err != nil {
 		if strings.Contains(err.Error(), "lender_id") {
 			return Debt{}, errors.NewUnauthorized("User canceling is not the same as the lender")
 		}
+		return Debt{}, errors.NewNotFound("debt not found")
 	}
-	updatedDebt, err := r.GetDebt(req.RequestId)
+	updatedDebt, err := r.GetDebt(req.DebtId)
 	if err != nil {
 		return Debt{}, err
 	}
