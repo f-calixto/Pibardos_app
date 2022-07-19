@@ -94,6 +94,7 @@ func (r *repo) GetDebt(id string) (Debt, error) {
 
 	err := r.db.QueryRow(getDebtQuery, id).Scan(&debt.Id, &debt.GroupId, &debt.LenderId, &debt.BorrowerId, &debt.Date, &debt.Description, &debt.Amount, &debt.Status)
 	if err != nil {
+		r.logger.Debug("AUXLIARY GET DEBT")
 		return Debt{}, errors.NewNotFound("debt not found")
 	}
 	return debt, nil
