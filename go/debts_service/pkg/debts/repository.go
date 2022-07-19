@@ -51,10 +51,19 @@ func (r *repo) CreateDebt(debt Debt) error {
 }
 
 func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
-	rows, _ := r.db.Exec(patchDebtQuery, 1, req.DebtId, req.UserId)
-	if n, _ := rows.RowsAffected(); n == 0 {
-		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
+	var n int64
+
+	rows, err := r.db.Exec(patchDebtQuery, 1, req.DebtId, req.UserId)
+	if err != nil {
+		return Debt{}, err
 	}
+	if n, err = rows.RowsAffected(); err != nil {
+		return Debt{}, err
+	}
+	if n != 1 {
+		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the lender")
+	}
+
 	updatedDebt, err := r.GetDebt(req.DebtId)
 	if err != nil {
 		return Debt{}, err
@@ -63,10 +72,19 @@ func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
 }
 
 func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
-	rows, _ := r.db.Exec(patchDebtQuery, 0, req.DebtId, req.UserId)
-	if n, _ := rows.RowsAffected(); n == 0 {
+	var n int64
+
+	rows, err := r.db.Exec(patchDebtQuery, 0, req.DebtId, req.UserId)
+	if err != nil {
+		return Debt{}, err
+	}
+	if n, err = rows.RowsAffected(); err != nil {
+		return Debt{}, err
+	}
+	if n != 1 {
 		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
 	}
+
 	updatedDebt, err := r.GetDebt(req.DebtId)
 	if err != nil {
 		return Debt{}, err
@@ -75,10 +93,19 @@ func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
 }
 
 func (r *repo) CancelDebt(req PatchDebtRequest) (Debt, error) {
-	rows, _ := r.db.Exec(cancelDebtQuery, 3, req.DebtId, req.UserId)
-	if n, _ := rows.RowsAffected(); n == 0 {
+	var n int64
+
+	rows, err := r.db.Exec(cancelDebtQuery, 3, req.DebtId, req.UserId)
+	if err != nil {
+		return Debt{}, err
+	}
+	if n, err = rows.RowsAffected(); err != nil {
+		return Debt{}, err
+	}
+	if n != 1 {
 		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the lender")
 	}
+
 	updatedDebt, err := r.GetDebt(req.DebtId)
 	if err != nil {
 		return Debt{}, err
