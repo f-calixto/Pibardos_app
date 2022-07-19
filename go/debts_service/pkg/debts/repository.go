@@ -14,8 +14,8 @@ var (
 	getDebtQuery    = `SELECT FROM debts WHERE id = $1`
 	createDebtQuery = `INSERT INTO debts(id, group_id, lender_id, borrower_id, date, 
 						  	 description, amount, status) Values($1, $2, $3, $4, $5, $6, $7, $8)`
-	patchDebtQuery   = `UPDATE debts SET status = $1 WHERE id = $2 AND borrower_id = $3`
-	cancelDebtQuery  = `UPDATE debts SET status = $1 WHERE id = $2 AND lender_id = $3`
+	patchDebtQuery   = `UPDATE debts SET status = $1 WHERE id = $2 AND borrower_id = $3 RETURNING *`
+	cancelDebtQuery  = `UPDATE debts SET status = $1 WHERE id = $2 AND lender_id = $3 RETURNING *`
 	getReceivedQuery = `SELECT FROM debts WHERE borrower_id = $1 AND group_id = $2`
 	getSentQuery     = `SELECT FROM debts WHERE lender_id = $1 AND group_id = $2`
 )
@@ -37,7 +37,6 @@ type Repository interface {
 	AcceptDebt(req PatchDebtRequest) (Debt, error)
 	RejectDebt(req PatchDebtRequest) (Debt, error)
 	CancelDebt(req PatchDebtRequest) (Debt, error)
-	GetDebt(id string) (Debt, error)
 	GetSentDebts(req GetDebtsRequest) ([]Debt, error)
 	GetReceivedDebts(req GetDebtsRequest) ([]Debt, error)
 }
@@ -51,53 +50,36 @@ func (r *repo) CreateDebt(debt Debt) error {
 }
 
 func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
-	rows, _ := r.db.Exec(patchDebtQuery, 1, req.DebtId, req.UserId)
-	if n, _ := rows.RowsAffected(); n != 1 {
+	var updatedDebt Debt
+
+	err := r.db.QueryRow(patchDebtQuery, 1, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
+	if err != nil {
 		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
 	}
 
-	updatedDebt, err := r.GetDebt(req.DebtId)
-	if err != nil {
-		return Debt{}, err
-	}
 	return updatedDebt, nil
 }
 
 func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
-	rows, _ := r.db.Exec(patchDebtQuery, 0, req.DebtId, req.UserId)
-	if n, _ := rows.RowsAffected(); n != 1 {
+	var updatedDebt Debt
+
+	err := r.db.QueryRow(patchDebtQuery, 0, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
+	if err != nil {
 		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
 	}
 
-	updatedDebt, err := r.GetDebt(req.DebtId)
-	if err != nil {
-		return Debt{}, err
-	}
 	return updatedDebt, nil
 }
 
 func (r *repo) CancelDebt(req PatchDebtRequest) (Debt, error) {
-	rows, _ := r.db.Exec(patchDebtQuery, 3, req.DebtId, req.UserId)
-	if n, _ := rows.RowsAffected(); n != 1 {
+	var updatedDebt Debt
+
+	err := r.db.QueryRow(patchDebtQuery, 1, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
+	if err != nil {
 		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the lender")
 	}
 
-	updatedDebt, err := r.GetDebt(req.DebtId)
-	if err != nil {
-		return Debt{}, err
-	}
 	return updatedDebt, nil
-}
-
-func (r *repo) GetDebt(id string) (Debt, error) {
-	var debt Debt
-
-	err := r.db.QueryRow(getDebtQuery, id).Scan(&debt.Id, &debt.GroupId, &debt.LenderId, &debt.BorrowerId, &debt.Date, &debt.Description, &debt.Amount, &debt.Status)
-	if err != nil {
-		r.logger.Debug("AUXLIARY GET DEBT")
-		return Debt{}, errors.NewNotFound("debt not found")
-	}
-	return debt, nil
 }
 
 func (r *repo) GetSentDebts(req GetDebtsRequest) ([]Debt, error) {
