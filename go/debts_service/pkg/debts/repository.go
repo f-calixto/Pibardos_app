@@ -92,7 +92,7 @@ func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
 func (r *repo) CancelDebt(req PatchDebtRequest) (Debt, error) {
 	var updatedDebt Debt
 
-	rows, err := r.db.Query(patchDebtQuery, 3, req.DebtId, req.UserId)
+	rows, err := r.db.Query(cancelDebtQuery, 3, req.DebtId, req.UserId)
 	if err != nil {
 		return Debt{}, err
 	}
