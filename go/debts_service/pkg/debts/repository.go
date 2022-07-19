@@ -51,6 +51,7 @@ func (r *repo) CreateDebt(debt Debt) error {
 }
 
 func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
+	r.logger.Debug(req.DebtId + " " + req.UserId)
 	rows, err := r.db.Exec(patchDebtQuery, 1, req.DebtId, req.UserId)
 	if err != nil {
 		if n, _ := rows.RowsAffected(); n == 0 {
