@@ -52,8 +52,17 @@ func (r *repo) CreateDebt(debt Debt) error {
 func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
 	var updatedDebt Debt
 
-	err := r.db.QueryRow(patchDebtQuery, 1, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
+	rows, err := r.db.Query(patchDebtQuery, 1, req.DebtId, req.UserId)
 	if err != nil {
+		return Debt{}, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		rows.Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
+	}
+
+	if updatedDebt == (Debt{}) {
 		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
 	}
 
@@ -63,8 +72,17 @@ func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
 func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
 	var updatedDebt Debt
 
-	err := r.db.QueryRow(patchDebtQuery, 0, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
+	rows, err := r.db.Query(patchDebtQuery, 0, req.DebtId, req.UserId)
 	if err != nil {
+		return Debt{}, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		rows.Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
+	}
+
+	if updatedDebt == (Debt{}) {
 		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
 	}
 
@@ -74,8 +92,17 @@ func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
 func (r *repo) CancelDebt(req PatchDebtRequest) (Debt, error) {
 	var updatedDebt Debt
 
-	err := r.db.QueryRow(patchDebtQuery, 1, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
+	rows, err := r.db.Query(patchDebtQuery, 3, req.DebtId, req.UserId)
 	if err != nil {
+		return Debt{}, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		rows.Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
+	}
+
+	if updatedDebt == (Debt{}) {
 		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the lender")
 	}
 
