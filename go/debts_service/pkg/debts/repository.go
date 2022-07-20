@@ -71,6 +71,7 @@ func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
 
 	err := r.db.QueryRow(patchDebtQuery, 0, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
 	if err != nil {
+		r.logger.Debug(err.Error())
 		return Debt{}, errors.NewNotFound("Unable to find debt")
 	}
 
