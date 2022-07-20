@@ -1,6 +1,7 @@
 import { SafeAreaView } from 'react-native'
-import { View, Flex, StatusBar, Heading } from 'native-base'
+import { View, Flex, StatusBar, Heading, Box } from 'native-base'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import GroupsButton from './components/GroupsButton'
 
 const TopBarView = ({ pageName = 'Untitled' }) => {
   return (
@@ -15,9 +16,12 @@ const TopBarView = ({ pageName = 'Untitled' }) => {
           px={4}
         >
           <Heading size='xl'>{pageName}</Heading>
-          <Ionicons name='notifications-outline' size={28} />
-          {/* <GroupsButton />
-          <ProfileButton /> */}
+          <Flex flexDir='row'>
+            <GroupsButton />
+            <Box ml={5}>
+              <Ionicons name='notifications-outline' size={28} />
+            </Box>
+          </Flex>
         </Flex>
       </SafeAreaView>
     </View>

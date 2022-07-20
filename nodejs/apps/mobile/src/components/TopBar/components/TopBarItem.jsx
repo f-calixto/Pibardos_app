@@ -1,16 +1,19 @@
-import { IconButton } from 'native-base'
+import { useTheme } from 'native-base'
+import { Pressable } from 'react-native'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
-const TopBarItem = ({ icon, ...rest }) => {
+const TopBarItem = ({ icon, onPress, ...rest }) => {
+  const theme = useTheme()
+
   return (
-    <IconButton
-      icon={icon}
-      borderRadius='full'
-      _icon={{
-        color: 'white',
-        size: 25
-      }}
-      {...rest}
-    />
+    <Pressable onPress={onPress}>
+      <Ionicons
+        name={icon}
+        color={theme.colors.text[900]}
+        size={28}
+        {...rest}
+      />
+    </Pressable>
   )
 }
 
