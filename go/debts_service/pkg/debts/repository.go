@@ -18,8 +18,8 @@ var (
 						AND status = 2 RETURNING *`
 	cancelDebtQuery = `UPDATE debts SET status = $1 WHERE id = $2 AND lender_id = $3
 						AND status = 2 RETURNING *`
-	getReceivedQuery = `SELECT FROM debts WHERE borrower_id = $1 AND group_id = $2`
-	getSentQuery     = `SELECT FROM debts WHERE lender_id = $1 AND group_id = $2`
+	getReceivedQuery = `SELECT * FROM debts WHERE borrower_id = $1 AND group_id = $2`
+	getSentQuery     = `SELECT * FROM debts WHERE lender_id = $1 AND group_id = $2`
 )
 
 type repo struct {
