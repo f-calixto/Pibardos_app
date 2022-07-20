@@ -56,10 +56,6 @@ func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
 
 	err := r.db.QueryRow(patchDebtQuery, 1, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
 	if err != nil {
-		return Debt{}, errors.NewNotFound("Unable to find debt")
-	}
-
-	if updatedDebt == (Debt{}) {
 		return Debt{}, errors.NewUnauthorized("User accepting the request is not the real borrower")
 	}
 
@@ -71,11 +67,6 @@ func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
 
 	err := r.db.QueryRow(patchDebtQuery, 0, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
 	if err != nil {
-		r.logger.Debug(err.Error())
-		return Debt{}, errors.NewNotFound("Unable to find debt")
-	}
-
-	if updatedDebt == (Debt{}) {
 		return Debt{}, errors.NewUnauthorized("User rejecting the request is not the real borrower")
 	}
 
@@ -87,11 +78,7 @@ func (r *repo) CancelDebt(req PatchDebtRequest) (Debt, error) {
 
 	err := r.db.QueryRow(cancelDebtQuery, 3, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
 	if err != nil {
-		return Debt{}, errors.NewNotFound("Unable to find debt")
-	}
-
-	if updatedDebt == (Debt{}) {
-		return Debt{}, errors.NewUnauthorized("User accepting the request is not the real lender")
+		return Debt{}, errors.NewUnauthorized("User accepting the request is not the real borrower")
 	}
 
 	return updatedDebt, nil
@@ -111,7 +98,7 @@ func (r *repo) GetSentDebts(req GetDebtsRequest) ([]Debt, error) {
 
 		err := rows.Scan(&debt.Id, &debt.GroupId, &debt.LenderId, &debt.BorrowerId, &debt.Date, &debt.Description, &debt.Amount, &debt.Status)
 		if err != nil {
-			return []Debt{}, errors.NewNotFound("unexpected error scanning rows")
+			return []Debt{}, err
 		}
 		sent = append(sent, debt)
 	}
@@ -121,7 +108,7 @@ func (r *repo) GetSentDebts(req GetDebtsRequest) ([]Debt, error) {
 func (r *repo) GetReceivedDebts(req GetDebtsRequest) ([]Debt, error) {
 	var received []Debt
 
-	rows, err := r.db.Query(getSentQuery, req.UserId, req.GroupId)
+	rows, err := r.db.Query(getReceivedQuery, req.UserId, req.GroupId)
 	if err != nil {
 		return []Debt{}, errors.NewNotFound("No sent debts")
 	}
