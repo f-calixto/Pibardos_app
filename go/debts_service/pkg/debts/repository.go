@@ -14,8 +14,10 @@ var (
 	getDebtQuery    = `SELECT FROM debts WHERE id = $1`
 	createDebtQuery = `INSERT INTO debts(id, group_id, lender_id, borrower_id, date, 
 						  	 description, amount, status) Values($1, $2, $3, $4, $5, $6, $7, $8)`
-	patchDebtQuery   = `UPDATE debts SET status = $1 WHERE id = $2 AND borrower_id = $3 RETURNING *`
-	cancelDebtQuery  = `UPDATE debts SET status = $1 WHERE id = $2 AND lender_id = $3 RETURNING *`
+	patchDebtQuery = `UPDATE debts SET status = $1 WHERE id = $2 AND borrower_id = $3
+						AND status = 2 RETURNING *`
+	cancelDebtQuery = `UPDATE debts SET status = $1 WHERE id = $2 AND lender_id = $3
+						AND status = 2 RETURNING *`
 	getReceivedQuery = `SELECT FROM debts WHERE borrower_id = $1 AND group_id = $2`
 	getSentQuery     = `SELECT FROM debts WHERE lender_id = $1 AND group_id = $2`
 )
@@ -52,21 +54,13 @@ func (r *repo) CreateDebt(debt Debt) error {
 func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
 	var updatedDebt Debt
 
-	rows, err := r.db.Query(patchDebtQuery, 1, req.DebtId, req.UserId)
+	err := r.db.QueryRow(patchDebtQuery, 1, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
 	if err != nil {
-		return Debt{}, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		rows.Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
+		return Debt{}, errors.NewNotFound("Unable to find debt")
 	}
 
 	if updatedDebt == (Debt{}) {
-		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
-	}
-	if updatedDebt.Status == 1 {
-		return Debt{}, errors.NewUnauthorized("Debt is already accepted")
+		return Debt{}, errors.NewUnauthorized("User accepting the request is not the real borrower")
 	}
 
 	return updatedDebt, nil
@@ -75,21 +69,13 @@ func (r *repo) AcceptDebt(req PatchDebtRequest) (Debt, error) {
 func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
 	var updatedDebt Debt
 
-	rows, err := r.db.Query(patchDebtQuery, 0, req.DebtId, req.UserId)
+	err := r.db.QueryRow(patchDebtQuery, 0, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
 	if err != nil {
-		return Debt{}, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		rows.Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
+		return Debt{}, errors.NewNotFound("Unable to find debt")
 	}
 
 	if updatedDebt == (Debt{}) {
-		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the borrower")
-	}
-	if updatedDebt.Status == 0 {
-		return Debt{}, errors.NewUnauthorized("Debt is already rejected")
+		return Debt{}, errors.NewUnauthorized("User rejecting the request is not the real borrower")
 	}
 
 	return updatedDebt, nil
@@ -98,21 +84,13 @@ func (r *repo) RejectDebt(req PatchDebtRequest) (Debt, error) {
 func (r *repo) CancelDebt(req PatchDebtRequest) (Debt, error) {
 	var updatedDebt Debt
 
-	rows, err := r.db.Query(cancelDebtQuery, 3, req.DebtId, req.UserId)
+	err := r.db.QueryRow(cancelDebtQuery, 3, req.DebtId, req.UserId).Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
 	if err != nil {
-		return Debt{}, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		rows.Scan(&updatedDebt.Id, &updatedDebt.GroupId, &updatedDebt.LenderId, &updatedDebt.BorrowerId, &updatedDebt.Date, &updatedDebt.Description, &updatedDebt.Amount, &updatedDebt.Status)
+		return Debt{}, errors.NewNotFound("Unable to find debt")
 	}
 
 	if updatedDebt == (Debt{}) {
-		return Debt{}, errors.NewUnauthorized("User accepting is not the same as the lender")
-	}
-	if updatedDebt.Status == 3 {
-		return Debt{}, errors.NewUnauthorized("Debt is already cancelled")
+		return Debt{}, errors.NewUnauthorized("User accepting the request is not the real lender")
 	}
 
 	return updatedDebt, nil
