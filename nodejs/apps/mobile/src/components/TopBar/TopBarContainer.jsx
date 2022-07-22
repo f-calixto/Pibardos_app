@@ -1,8 +1,8 @@
 import TopBarView from './TopBarView'
 
-const TopBarContainer = () => {
+const TopBarContainer = ({ pageName }) => {
   return (
-    <TopBarView />
+    <TopBarView pageName={pageName} />
   )
 }
 
