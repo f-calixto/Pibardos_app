@@ -23,7 +23,7 @@ const RouterConfig = () => {
       <Route exact path='/'
         element={isLoggedIn
           ? <Navigate to='/group' />
-          : <Navigate to='/debts' />}
+          : <Navigate to='/auth' />}
       />
 
       {/* Authentication */}

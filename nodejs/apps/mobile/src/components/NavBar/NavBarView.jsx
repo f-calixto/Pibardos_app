@@ -18,7 +18,7 @@ const NavBarView = () => {
       >
       <NavBarItem
         icon='home-outline'
-        to='/'
+        to='/group'
         currentPath={location.pathname}
       />
       <NavBarItem
