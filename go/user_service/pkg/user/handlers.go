@@ -68,16 +68,9 @@ func (h *handlers) GetUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	// extract user id passed by context by jwtMiddleware
-	userId := fmt.Sprintf("%v", r.Context().Value(UserIdKey{}))
+	//userId := fmt.Sprintf("%v", r.Context().Value(UserIdKey{}))
 
-	// check if id path var is the same as jwt authenticated user id
-	/*if userId != mux.Vars(r)["id"] {
-		h.logger.Error("handlers.go", "GetUser", "malformed id in path param")
-		statusCode, resp := errors.CreateResponse(errors.NewJwtAuthorization("jwt id and path id do not match"))
-		w.WriteHeader(statusCode)
-		json.NewEncoder(w).Encode(resp)
-		return
-	}*/
+	userId := mux.Vars(r)["id"]
 
 	user, err := h.service.GetUser(userId)
 	if err != nil {
