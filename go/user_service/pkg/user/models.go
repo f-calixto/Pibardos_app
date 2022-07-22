@@ -38,7 +38,7 @@ type User struct {
 	Country    string `json:"country"`
 	Birthdate  string `json:"birthdate"`
 	Created_at string `json:"created_at"`
-	Status     string `json:"status"`
+	Status     string `json:"status,omitempty"`
 	Avatar     string `json:"avatar"`
 }
 

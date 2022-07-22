@@ -22,7 +22,7 @@ type Group struct {
 	Access_code_expiration_time int64  `json:",omitempty"`
 	Avatar                      string `json:"avatar"`
 	Created_at                  string `json:"created_at"`
-	Description                 string `json:"description"`
+	Description                 string `json:"description,omitempty"`
 }
 
 type CreateGroupRequest struct {
@@ -78,7 +78,7 @@ type User struct {
 	Country    string `json:"country"`
 	Birthdate  string `json:"birthdate"`
 	Created_at string `json:"created_at"`
-	Status     string `json:"status"`
+	Status     string `json:"status,omitempty"`
 	Avatar     string `json:"avatar"`
 }
 
