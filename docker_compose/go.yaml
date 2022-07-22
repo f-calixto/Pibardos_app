@@ -67,7 +67,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
 
       - VIRTUAL_PORT=5002
-      - VIRTUAL_PATH=/groups/
+      - VIRTUAL_PATH=/groups
       - VIRTUAL_DEST=/
       - VIRTUAL_HOST=api.pibardosapp.com
 
