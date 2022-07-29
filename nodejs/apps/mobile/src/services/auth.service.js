@@ -21,7 +21,7 @@ const loginUser = async ({ email, password }) => {
   return response
 }
 
-export const userService = {
+export const authService = {
   registerUser,
   loginUser
 }
