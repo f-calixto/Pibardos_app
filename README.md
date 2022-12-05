@@ -1,3 +1,1 @@
-<div align="center">
-  <img alt="JPG" src="https://static.pibardosapp.com/800/diagram.jpg"/>
-</div>
+![architecture_overview](https://github.com/coding-kiko/Pibardos_app/blob/main/readme/pibardos_app_architecture.jpg?raw=true)
